@@ -7,6 +7,9 @@ from models.product import Product, ProductCreate, ProductRead, ProductUpdate
 from database.connection import get_session 
  
 router = APIRouter() 
+def get_db(): 
+    with get_session() as session: 
+        yield session
 @router.get("/", response_model=List[ProductRead]) 
 def read_products(skip: int = 0, limit: int = 100, name: Optional[str] = None, session: Session = Depends(get_db)): 
     query = select(Product) 
