@@ -2,11 +2,14 @@
 from fastapi import APIRouter, Depends, HTTPException 
 from sqlmodel import Session, select 
 from typing import List, Optional 
-from datetime import datetime 
- 
+from datetime import datetime  
 from models.product import Product, ProductCreate, ProductRead, ProductUpdate 
 from database.connection import get_session 
 
+router = APIRouter() 
+def get_db(): 
+    with get_session() as session: 
+        yield session 
 
 @router.put("/{product_id}", response_model=ProductRead) 
 def update_product(product_id: int, product_update: ProductUpdate, session: Session = Depends(get_db)): 
