@@ -2,11 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select 
 from typing import List, Optional 
 from datetime import datetime 
- 
+from database.connection import get_session
 from models.product import Product, ProductCreate, ProductRead, ProductUpdate 
-from database.connection import get_session 
- 
- 
+router = APIRouter() 
+def get_db(): 
+    with get_session() as session: 
+        yield session 
  
 
 @router.get("/{product_id}", response_model=ProductRead) 
