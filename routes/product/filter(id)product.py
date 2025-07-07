@@ -3,7 +3,7 @@ from sqlmodel import Session, select
 from typing import List, Optional 
 from datetime import datetime 
 from database.connection import get_session
-from models.product import Product, ProductCreate, ProductRead, ProductUpdate 
+from model.product import Product, ProductCreate, ProductRead, ProductUpdate 
 router = APIRouter() 
 def get_db(): 
     with get_session() as session: 
