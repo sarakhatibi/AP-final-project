@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
-from models.order import Order
+from model.order import Order
 from schemas.order import OrderCreate, OrderRead, OrderUpdate
 from database.connection import get_session
 
