@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 from database.connection import get_session
-from models.provider import Provider, ProviderCreate
+from model.provider import Provider, ProviderCreate
 
 router = APIRouter()
 
