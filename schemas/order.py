@@ -9,3 +9,19 @@ class OrderUpdate(SQLModel):
     status: Optional[str] = None
     order_date: Optional[datetime] = None
     provider_id: Optional[int] = None
+
+
+class OrderCreate(SQLModel):
+    customer_name: str
+    order_type: str
+    status: str
+    provider_id: int
+
+class OrderRead(SQLModel):
+    id: int
+    customer_name: str
+    order_type: str
+    status: str
+    order_date: datetime
+    provider_id: int
+
