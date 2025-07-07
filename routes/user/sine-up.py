@@ -4,7 +4,7 @@ from database.connection import get_session
 from schemas.user import UserCreate
 from schemas.user import UserLogin
 from model.user import User
-
+from security.hash import hash_password,verify_password
 
 def get_db(): 
     with get_session() as session: 
