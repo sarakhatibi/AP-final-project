@@ -9,6 +9,7 @@ router = APIRouter()
 @router.post("/providers/", response_model=Provider)
 def create_provider(provider: ProviderCreate, session: Session = Depends(get_session)):
     try:
+    
         db_provider = Provider.from_orm(provider)
         session.add(db_provider)
         session.commit()
