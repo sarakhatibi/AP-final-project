@@ -1,6 +1,14 @@
 # models.py
+from enum import Enum
 from sqlmodel import SQLModel, Field
 from typing import Optional
+from database.connection import get_session
+from datetime import datetime
+
+
+class OrderType(str, Enum):
+    purchase = "purchase"
+    sales = "sales"
 
 class Order(SQLModel, table=True): 
     id: Optional[int] = Field(default=None, primary_key=True) 
@@ -16,3 +24,7 @@ class OrderItem(SQLModel, table=True):
     product_id: int = Field(foreign_key="product.id") 
     quantity: int 
     unit_price: float
+
+
+
+
