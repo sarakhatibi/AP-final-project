@@ -1,5 +1,11 @@
 from fastapi import Path
+from fastapi import APIRouter, Depends, HTTPException
+from model.order import Order
+from sqlmodel import Session
+from database.connection import get_session
 
+
+router = APIRouter()
 @router.put("/orders/{order_id}", response_model=Order)
 def update_order(order_id: int, updated_order: Order, session: Session = Depends(get_session)):
     existing_order = session.get(Order, order_id)
