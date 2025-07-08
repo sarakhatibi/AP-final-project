@@ -1,7 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
-from database.connection import get_db
-from model.user import User, UserRead, UserCreate, UserUpdate, UserLogin
+from database.connection import get_session
+from model.user import User
+from schemas.user import UserRead, UserCreate, UserUpdate, UserLogin
+
+def get_db(): 
+    with get_session() as session: 
+        yield session
 
 router = APIRouter (tags=["Users"])
 @router.get("/users/{user_id}", response_model=UserRead)

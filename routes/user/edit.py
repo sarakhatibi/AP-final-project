@@ -1,9 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
-from database.connection import get_db
-from model.user import User, UserUpdate   
+from database.connection import get_session
+from model.user import User
+from schemas.user import UserUpdate   
 
 router = APIRouter()
+
+def get_db(): 
+    with get_session() as session: 
+        yield session
 
 @router.put("/users/{user_id}")
 def update_user(user_id: int, user_update: UserUpdate, session: Session = Depends(get_db)):

@@ -6,6 +6,10 @@ from schemas.provider import ProviderUpdate
 
 router = APIRouter()
 
+def get_db(): 
+    with get_session() as session: 
+        yield session
+
 @router.put("/providers/{provider_id}", response_model=provider)
 def update_provider(
     provider_id: int,
