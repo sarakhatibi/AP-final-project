@@ -1,5 +1,8 @@
 from typing import Optional
 from sqlmodel import SQLModel, Field
+from pydantic import BaseModel
+
+
 
 
 class ProductCreate(SQLModel):
@@ -29,3 +32,11 @@ class ProductUpdate(SQLModel):
     category: Optional[str] = None
     image: Optional[str] = None
     quantity: Optional[int] = None
+
+class LowStockAlert(BaseModel):
+    name: str
+    sku: str
+    quantity: int
+    min_threshold: int
+    alert: str
+
