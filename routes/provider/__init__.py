@@ -1,8 +1,8 @@
 from fastapi import APIRouter
-from addprovider import router as addprovider 
-from delete import router as delete
-from display import router as display
-from edit import router as edit
+from .addprovider import router as addprovider 
+from .delete import router as delete
+from .display import router as display
+from .edit import router as edit
 
 router = APIRouter(prefix="/providers")
 
