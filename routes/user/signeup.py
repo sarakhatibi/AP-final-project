@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends,HTTPException 
+from fastapi import APIRouter, Depends,HTTPException,status 
 from sqlmodel import Session, select 
 from database.connection import get_session 
 from schemas.user import UserCreate
@@ -11,11 +11,19 @@ def get_db():
     with get_session() as session: 
         yield session 
 
-router = APIRouter() 
-@router.post("/signup")
 
+router = APIRouter()
+@router.post("/signup", status_code=status.HTTP_201_CREATED)
 def signup(user_create: UserCreate, session: Session = Depends(get_db)):
 
+    statement = select(User).where((User.email == user_create.email) | (User.username == user_create.username))
+    existing_user = session.exec(statement).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email or username already registered"
+        )
+    
     hashed = hash_password(user_create.password)
     new_user = User(
         full_name=user_create.full_name,
@@ -26,7 +34,9 @@ def signup(user_create: UserCreate, session: Session = Depends(get_db)):
     session.add(new_user)
     session.commit()
     session.refresh(new_user)
-    return {"msg": "ثبت‌ نام موفق"}
+    return {"msg": "ثبت‌ نام موفق", "user_id": new_user.id}
+
+
 
 @router.post("/login")
 def login(credentials: UserLogin, session: Session = Depends(get_db)):

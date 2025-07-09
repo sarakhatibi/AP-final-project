@@ -19,7 +19,7 @@ def update_user(user_id: int, user_update: UserUpdate, session: Session = Depend
     user.full_name = user_update.full_name
     user.email = user_update.email
     user.username = user_update.username
-    
+    user.password=user_update.password
     session.add(user)
     session.commit()
     session.refresh(user)

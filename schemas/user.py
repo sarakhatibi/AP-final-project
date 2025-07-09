@@ -1,13 +1,13 @@
 
 from sqlmodel import SQLModel, Field
 from typing import Optional
-from pydantic import EmailStr, constr
+from pydantic import EmailStr
 
 
 class UserCreate(SQLModel):
     full_name: str
-    email: EmailStr
-    username: str
+    email: EmailStr=Field(unique=True)
+    username: str=Field(unique=True)
     password: Optional[str] = Field(default=None, min_length=8)
 
 class UserLogin(SQLModel):
@@ -17,13 +17,14 @@ class UserLogin(SQLModel):
 class UserRead(SQLModel):
     id: int
     full_name: str
-    email: EmailStr
-    username: str
+    email: EmailStr=Field(unique=True)
+    username: str=Field(unique=True)
     role: str
 
 class UserUpdate(SQLModel):
-    full_name: Optional[str] = None
-    email: Optional[EmailStr] = None
+    full_name: Optional[str]
+    username:Optional[str]= Field(default=None,unique=True)
+    email: Optional[EmailStr] = Field(default=None,unique=True)
     password: Optional[str] = Field(default=None, min_length=8)
 
 
