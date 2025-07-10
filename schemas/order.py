@@ -16,7 +16,7 @@ class OrderUpdate(SQLModel):
 class OrderCreate(SQLModel):
     customer_name: str
     order_type:OrderType
-    status: OrderStatus
+    status: OrderStatus= OrderStatus.draft 
     provider_id: int
 
 class OrderRead(SQLModel):
