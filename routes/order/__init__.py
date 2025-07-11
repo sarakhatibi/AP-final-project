@@ -7,8 +7,8 @@ from .delete import router as delete_router
 
 router = APIRouter(prefix="/orders")
 
-router.include_router(get_all_router)
-router.include_router(get_by_id_router)
-router.include_router(add_router)
-router.include_router(update_router)
-router.include_router(delete_router)
+router.include_router(get_all_router, prefix="", tags=["Orders - Get All"])
+router.include_router(get_by_id_router, prefix="", tags=["Orders - Get By ID"])
+router.include_router(add_router, prefix="", tags=["Orders - Add"])
+router.include_router(update_router, prefix="", tags=["Orders - Update"])
+router.include_router(delete_router, prefix="", tags=["Orders - Delete"])

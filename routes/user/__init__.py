@@ -1,14 +1,14 @@
 from fastapi import APIRouter
-from .signeup import router as signeup
-from .edit import router as edit
-from .displayauser import router as displayauser
-from .displayallusers import router as displayallusers
-from .delete import router as delete
+from .signeup import router as signeup_router
+from .edit import router as edit_router
+from .displayauser import router as displayauser_router
+from .displayallusers import router as displayallusers_router
+from .delete import router as delete_router
 
 router = APIRouter(prefix="/users")
 
-router.include_router(signeup)
-router.include_router(edit)
-router.include_router(displayauser)
-router.include_router(displayallusers)
-router.include_router(delete)
+router.include_router(signeup_router, prefix="/signup", tags=["Users - Signeup"])
+router.include_router(edit_router, prefix="/edit", tags=["Users - Edit"])
+router.include_router(displayauser_router, prefix="/display", tags=["Users - Display Single"])
+router.include_router(displayallusers_router, prefix="/displayall", tags=["Users - Display All"])
+router.include_router(delete_router, prefix="/delete", tags=["Users - Delete"])
