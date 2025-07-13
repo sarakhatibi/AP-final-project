@@ -5,7 +5,7 @@ from .add_order import router as add_router
 from .update_order import router as update_router
 from .delete import router as delete_router
 
-router = APIRouter(prefix="/orders")
+router = APIRouter()
 
 router.include_router(get_all_router, prefix="", tags=["Orders - Get All"])
 router.include_router(get_by_id_router, prefix="", tags=["Orders - Get By ID"])

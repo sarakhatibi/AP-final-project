@@ -6,11 +6,24 @@ from routes.product import router as product_router
 
 app=FastAPI()
 
+
+
+
+
+
+
+from sqlmodel import SQLModel
+from database.connection import engine
+
+SQLModel.metadata.create_all(engine)
+
+
+
 @app.get("/")
 def read_root():
     return{"message":"Welcome to our shop!"}
 
-app.include_router(order_router, tags=["Orders"])
+app.include_router(order_router, prefix="/orders", tags=["Orders"])
 app.include_router(provider_router, tags=["providers"])
 app.include_router(user_router, tags=["useres"])
 app.include_router(product_router, tags=["products"])
