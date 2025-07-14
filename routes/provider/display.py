@@ -3,6 +3,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session, select
 from database.connection import get_session
 from model.provider import provider
+from security.auth import get_current_user
+from model.user import User
+
 
 router = APIRouter()
 
@@ -10,8 +13,11 @@ router = APIRouter()
 def read_providers(
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1),
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
 ):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Access denied. Only admins can see providers.")
     try:
         offset = (page - 1) * limit
         query = select(provider).offset(offset).limit(limit)
