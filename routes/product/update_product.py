@@ -4,8 +4,10 @@ from sqlmodel import Session, select
 from typing import List, Optional 
 from datetime import datetime  
 from model.product import Product
+from model.user import User
 from schemas.product import ProductCreate, ProductRead, ProductUpdate 
 from database.connection import get_session 
+from security.auth import get_current_user
 
 router = APIRouter() 
 def get_db(): 
@@ -13,7 +15,10 @@ def get_db():
         yield session 
 
 @router.put("/{product_id}", response_model=ProductRead) 
-def update_product(product_id: int, product_update: ProductUpdate, session: Session = Depends(get_db)): 
+def update_product(product_id: int, product_update: ProductUpdate, session: Session = Depends(get_db),current_user: User = Depends(get_current_user)): 
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Access denied. Only admins can update products.")
+
     product = session.get(Product, product_id) 
     if not product: 
         raise HTTPException(status_code=404, detail="Product not found") 
@@ -23,4 +28,5 @@ def update_product(product_id: int, product_update: ProductUpdate, session: Sess
     session.add(product) 
     session.commit() 
     session.refresh(product) 
+    
     return product
