@@ -6,6 +6,7 @@ from .add_product import router as add_product_router
 from .update_product import router as update_product_router
 from .filter_sku import router as filter_sku_router
 from .inventory_alert import router as inventory_alert_router
+from .filter_price_product import router as filter_price_product_router
 
 router = APIRouter(prefix="/products")
 
@@ -16,3 +17,4 @@ router.include_router(filter_id_product_router, prefix="/filter-id", tags=["Prod
 router.include_router(add_product_router, prefix="/add", tags=["Products - Add"])
 router.include_router(update_product_router, prefix="/update", tags=["Products - Update"])
 router.include_router(inventory_alert_router, prefix="/inventory-alert", tags=["Products - Inventory Alert"])
+router.include_router(filter_price_product_router, prefix="/filter-price", tags=["Products - Filter by Price"])
