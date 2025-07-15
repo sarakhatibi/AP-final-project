@@ -10,8 +10,13 @@ router = APIRouter()
 def get_products(
     min_price: Optional[float] = Query(None),
     max_price: Optional[float] = Query(None),
-    session: Session = Depends(get_session)  
+    page: int = Query(1, ge=1),
+    limit: int = Query(10, ge=1),
+    session: Session = Depends(get_session)
 ):
+   
+    offset = (page - 1) * limit
+
     query = select(Product)
 
     if min_price is not None:
@@ -19,11 +24,19 @@ def get_products(
     if max_price is not None:
         query = query.where(Product.price <= max_price)
 
-    products = session.exec(query).all()
+   
+    products = session.exec(query.offset(offset).limit(limit)).all()
+
+    
     if not products:
         raise HTTPException(
             status_code=404,
-            detail="هیچ کالایی در بازه‌ی قیمتی مشخص‌شده پیدا نشد."
+            detail="محصولی در این صفحه یا بازه قیمتی یافت نشد."
         )
 
-    return products
+    
+    return {
+        "page": page,
+        "limit": limit,
+        "products": products
+    }
