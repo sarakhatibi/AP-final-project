@@ -5,10 +5,10 @@ from model.user import User
 from database.connection import get_session
 from jose import jwt, JWTError
 
-SECRET_KEY = "your_secret_key"
+SECRET_KEY = "mysecretkey"
 ALGORITHM = "HS256"
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login")
 
 def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     try:

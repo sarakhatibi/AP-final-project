@@ -15,7 +15,7 @@ def get_low_stock_products(session: Session = Depends(get_session)):
     results = session.exec(query).all()
 
     alerts = []
-    for p in product:
+    for p in results:
         alerts.append(LowStockAlert(
             name=p.name,
             sku=p.sku,
