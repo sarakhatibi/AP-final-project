@@ -13,7 +13,7 @@ def get_db():
 
 
 router = APIRouter()
-@router.post()
+@router.post("/login")
 def login(credentials: UserLogin, session: Session = Depends(get_db)):
     user = session.exec(select(User).where(User.username == credentials.username)).first()
     if not user or not verify_password(credentials.password, user.hashed_password):
