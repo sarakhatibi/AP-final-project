@@ -6,7 +6,7 @@ from database.connection import get_session
 
 router = APIRouter()
 
-@router.post("/")
+@router.post("/add")
 def create_order(order: Order, session: Session = Depends(get_session)):
     try:
         session.add(order)

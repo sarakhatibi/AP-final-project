@@ -5,7 +5,7 @@ from database.connection import get_session
 
 router = APIRouter()
 
-@router.get("/products")
+@router.get("/showallbyname")
 def get_products(
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1),

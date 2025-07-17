@@ -11,7 +11,7 @@ def get_db():
         yield session 
  
 
-@router.get("/{product_id}", response_model=ProductRead) 
+@router.get("/filter_id/{product_id}", response_model=ProductRead) 
 def read_product(product_id: int, session: Session = Depends(get_db)): 
     product = session.get(Product, product_id) 
     if not product: 

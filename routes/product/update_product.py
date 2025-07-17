@@ -14,7 +14,7 @@ def get_db():
     with get_session() as session: 
         yield session 
 
-@router.put("/{product_id}", response_model=ProductRead) 
+@router.put("/update/{product_id}", response_model=ProductRead) 
 def update_product(product_id: int, product_update: ProductUpdate, session: Session = Depends(get_db),current_user: User = Depends(get_current_user)): 
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Access denied. Only admins can update products.")

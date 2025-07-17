@@ -6,7 +6,7 @@ from database.connection import get_session
 
 router = APIRouter()
 
-@router.get("/products")
+@router.get("/filter_price")
 def get_products(
     min_price: Optional[float] = Query(None),
     max_price: Optional[float] = Query(None),

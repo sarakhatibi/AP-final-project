@@ -13,7 +13,7 @@ def get_db():
     with get_session() as session: 
         yield session
 
-@router.delete("/providers/{provider_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/delete/{provider_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_provider(provider_id: int, session: Session = Depends(get_session),current_user: User = Depends(get_current_user)):
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Access denied. Only admins can delete providers.")

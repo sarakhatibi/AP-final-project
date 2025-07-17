@@ -9,7 +9,7 @@ from model.user import User
 
 router = APIRouter()
 
-@router.post("/providers/", response_model=provider)
+@router.post("/add", response_model=provider)
 def create_provider(provider: ProviderCreate, session: Session = Depends(get_session),current_user: User = Depends(get_current_user)):
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Access denied. Only admins can add providers.")

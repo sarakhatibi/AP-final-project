@@ -6,7 +6,7 @@ from database.connection import get_session
 
 router = APIRouter()
 
-@router.get("/orders/", response_model=list[OrderRead])
+@router.get("/getall", response_model=list[OrderRead])
 def get_all_orders(
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1),

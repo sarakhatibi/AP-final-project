@@ -16,7 +16,7 @@ def get_db():
         yield session 
  
 
-@router.post("/", response_model=ProductRead) 
+@router.post("/add", response_model=ProductRead) 
 def create_product(product: ProductCreate, session: Session = Depends(get_db),current_user: User = Depends(get_current_user)): 
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Access denied. Only admins can create products.")

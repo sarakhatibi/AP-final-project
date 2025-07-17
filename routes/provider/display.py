@@ -9,7 +9,7 @@ from model.user import User
 
 router = APIRouter()
 
-@router.get("/providers/", response_model=list[provider])
+@router.get("/display_all", response_model=list[provider])
 def read_providers(
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1),

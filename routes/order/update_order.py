@@ -6,7 +6,7 @@ from database.connection import get_session
 
 
 router = APIRouter()
-@router.put("/orders/{order_id}", response_model=Order)
+@router.put("/update/{order_id}", response_model=Order)
 def update_order(order_id: int, updated_order: Order, session: Session = Depends(get_session)):
     existing_order = session.get(Order, order_id)
     if not existing_order:

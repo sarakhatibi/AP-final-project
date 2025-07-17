@@ -13,7 +13,7 @@ def get_db():
     with get_session() as session: 
         yield session
 
-@router.put("/providers/{provider_id}", response_model=provider)
+@router.put("/edit/{provider_id}", response_model=provider)
 def update_provider(
     provider_id: int,
     provider_update: ProviderUpdate,

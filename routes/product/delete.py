@@ -13,7 +13,7 @@ def get_db():
     with get_session() as session: 
         yield session 
 
-@router.delete("/{product_id}") 
+@router.delete("/delete/{product_id}") 
 def delete_product(product_id: int, session: Session = Depends(get_db),current_user: User = Depends(get_current_user)): 
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Access denied. Only admins can delete products.")

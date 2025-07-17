@@ -11,7 +11,7 @@ def get_db():
     with get_session() as session:
         yield session
 
-@router.get("/", response_model=List[ProductRead])
+@router.get("/filter_name", response_model=List[ProductRead])
 def read_products(
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1),

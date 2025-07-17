@@ -8,7 +8,7 @@ from database.connection import get_session
 router = APIRouter()
 
 
-@router.get("/orders/{order_id}", response_model=OrderRead)
+@router.get("/getbyid/{order_id}", response_model=OrderRead)
 def get_order(order_id: int, session: Session = Depends(get_session)):
     order = session.get(Order, order_id)
     if not order:

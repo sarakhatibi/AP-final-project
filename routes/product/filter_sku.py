@@ -6,7 +6,7 @@ from typing import Optional, List
 
 router = APIRouter()
 
-@router.get("/", response_model=List[Product])
+@router.get("/filter_sku", response_model=List[Product])
 def get_products(
     sku: Optional[str] = Query(None),
     session: Session = Depends(get_session)
