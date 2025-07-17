@@ -2,14 +2,14 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session, select
 from database.connection import get_session
-from model.provider import provider
+from model.provider import Provider
 from security.auth import get_current_user
 from model.user import User
 
 
 router = APIRouter()
 
-@router.get("/display_all", response_model=list[provider])
+@router.get("/display_all", response_model=list[Provider])
 def read_providers(
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1),
@@ -20,7 +20,7 @@ def read_providers(
         raise HTTPException(status_code=403, detail="Access denied. Only admins can see providers.")
     try:
         offset = (page - 1) * limit
-        query = select(provider).offset(offset).limit(limit)
+        query = select(Provider).offset(offset).limit(limit)
         providers = session.exec(query).all()
         if not providers:
             raise HTTPException(status_code=404, detail="هیچ تأمین‌کننده‌ای در این صفحه پیدا نشد.")

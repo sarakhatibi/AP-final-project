@@ -2,7 +2,7 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional
 
-class provider(SQLModel, table=True):
+class Provider(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str
     contact: Optional[str] = None
