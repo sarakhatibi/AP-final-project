@@ -11,7 +11,7 @@ def get_db():
     with get_session() as session:
         yield session
 
-@router.get("/users", response_model=list[UserRead])
+@router.get("/display_all", response_model=list[UserRead])
 def get_all_users(
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1),
