@@ -1,15 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
-from database.connection import get_session
+from database.connection import get_db
 from model.user import User
 from schemas.user import UserUpdate   
 from security.auth import get_current_user
 
 router = APIRouter()
 
-def get_db(): 
-    with get_session() as session: 
-        yield session
 
 @router.put("/edit/{user_id}")
 def update_user(user_id: int, user_update: UserUpdate, session: Session = Depends(get_db),current_user: User = Depends(get_current_user)):
@@ -22,7 +19,7 @@ def update_user(user_id: int, user_update: UserUpdate, session: Session = Depend
  user.full_name = user_update.full_name
  user.email = user_update.email
  user.username = user_update.username
- user.password=user_update.password
+ user.hashed_password=user_update.password
  session.add(user)
  session.commit()
  session.refresh(user)

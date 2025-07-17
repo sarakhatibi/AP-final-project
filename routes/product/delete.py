@@ -5,13 +5,10 @@ from typing import List, Optional
 from datetime import datetime 
 from model.product import Product
 from schemas.product import ProductCreate, ProductRead, ProductUpdate 
-from database.connection import get_session  
+from database.connection import get_db
 from security.auth import get_current_user
 from model.user import User
 router = APIRouter() 
-def get_db(): 
-    with get_session() as session: 
-        yield session 
 
 @router.delete("/delete/{product_id}") 
 def delete_product(product_id: int, session: Session = Depends(get_db),current_user: User = Depends(get_current_user)): 

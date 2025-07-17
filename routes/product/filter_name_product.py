@@ -3,13 +3,10 @@ from sqlmodel import Session, select
 from typing import List, Optional
 from model.product import Product
 from schemas.product import ProductRead
-from database.connection import get_session
+from database.connection import get_db
 
 router = APIRouter()
 
-def get_db():
-    with get_session() as session:
-        yield session
 
 @router.get("/filter_name", response_model=List[ProductRead])
 def read_products(
