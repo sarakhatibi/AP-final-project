@@ -13,5 +13,5 @@ def get_products(
 ):
     query = select(Product)
     if sku:
-        query = query.where(Product.sku_code == sku)
+        query = query.where(Product.sku == sku)
     return session.exec(query).all()

@@ -6,13 +6,10 @@ from datetime import datetime
 from model.product import Product
 from model.user import User
 from schemas.product import ProductCreate, ProductRead, ProductUpdate 
-from database.connection import get_session 
+from database.connection import get_db 
 from security.auth import get_current_user
 
 router = APIRouter() 
-def get_db(): 
-    with get_session() as session: 
-        yield session 
 
 @router.put("/update/{product_id}", response_model=ProductRead) 
 def update_product(product_id: int, product_update: ProductUpdate, session: Session = Depends(get_db),current_user: User = Depends(get_current_user)): 
