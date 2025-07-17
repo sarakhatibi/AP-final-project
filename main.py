@@ -24,6 +24,6 @@ def read_root():
     return{"message":"Welcome to our shop!"}
 
 app.include_router(order_router, prefix="/orders", tags=["Orders"])
-app.include_router(provider_router, tags=["providers"])
-app.include_router(user_router, tags=["useres"])
-app.include_router(product_router, tags=["products"])
+app.include_router(provider_router, prefix="/providers", tags=["providers"])
+app.include_router(user_router, prefix="/users", tags=["users"])
+app.include_router(product_router, prefix="/products", tags=["products"])
