@@ -1,15 +1,12 @@
 from fastapi import APIRouter, Depends,HTTPException,status 
 from sqlmodel import Session, select 
-from database.connection import get_session 
+from database.connection import get_db 
 from schemas.user import UserCreate
 from schemas.user import UserLogin
 from model.user import User
 from security.hash import hash_password,verify_password
 from security.jwt import create_access_token
 
-def get_db(): 
-    with get_session() as session: 
-        yield session 
 
 
 router = APIRouter()
