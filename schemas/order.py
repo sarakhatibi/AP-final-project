@@ -7,6 +7,7 @@ from model.order import OrderStatus, OrderType
 
 class OrderUpdate(SQLModel):
     customer_name: Optional[str] = None
+    customer_name: Optional[int] = None
     order_type: Optional[OrderType] = None
     status: Optional[OrderStatus] = None
     order_date: Optional[datetime] = None
