@@ -2,11 +2,11 @@
 from typing import Optional
 from sqlmodel import SQLModel
 from datetime import datetime
-from model.order import OrderStatus, OrderType
+from model.order import OrderStatus
 
 
 class OrderUpdate(SQLModel):
-    id: Optional[int] 
+  
     quantity:Optional[int] = None  
     name: Optional[str] = None
     price:Optional[float] = None 
@@ -17,7 +17,6 @@ class OrderUpdate(SQLModel):
 
 
 class OrderCreate(SQLModel):
-    id: Optional[int] 
     quantity:int
     order_date: datetime  
     name: str
