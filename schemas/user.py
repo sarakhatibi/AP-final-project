@@ -2,7 +2,7 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional
 from pydantic import EmailStr
-
+from pydantic import BaseModel
 
 class UserCreate(SQLModel):
     full_name: str
@@ -29,11 +29,15 @@ class UserUpdate(SQLModel):
 
 
 
-class Userwallet(SQLModel):
-    
-    id: int 
-    userwallet: float = 0.0
 
+
+
+class WalletChargeRequest(BaseModel):
+    amount: float
+
+class UserwalletRead(SQLModel):
+    id: int
+    userwallet: float
 
 
    

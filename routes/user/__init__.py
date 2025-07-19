@@ -5,6 +5,7 @@ from .edit import router as edit_router
 from .displayauser import router as displayauser_router
 from .displayallusers import router as displayallusers_router
 from .delete import router as delete_router
+from .wallet import router as wallet_router  
 
 router = APIRouter()
 
@@ -14,3 +15,4 @@ router.include_router(edit_router, prefix="", tags=["Users - Edit"])
 router.include_router(displayauser_router, prefix="", tags=["Users - Display Single"])
 router.include_router(displayallusers_router, prefix="", tags=["Users - Display All"])
 router.include_router(delete_router, prefix="", tags=["Users - Delete"])
+router.include_router(wallet_router, prefix="", tags=["Users - wallet"])  
