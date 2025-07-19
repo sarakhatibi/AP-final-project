@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session, select
 from model.order import Order
 from schemas.order import OrderRead
-from database.connection import get_session
+from database.connection import get_db
 
 router = APIRouter()
 
@@ -10,7 +10,7 @@ router = APIRouter()
 def get_all_orders(
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1),
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_db)
 ):
     offset = (page - 1) * limit
     query = select(Order).offset(offset).limit(limit)
