@@ -2,7 +2,7 @@
 from enum import Enum
 from sqlmodel import SQLModel, Field
 from typing import Optional
-from database.connection import get_session
+from database.connection import get_db
 from datetime import datetime
 
 
@@ -20,11 +20,13 @@ class OrderType(str, Enum):
 
 class Order(SQLModel, table=True): 
     id: Optional[int] = Field(default=None, primary_key=True) 
-    order_type: OrderType  # "purchase" or "sales" 
-    provider_id: Optional[int] = Field(default=None, foreign_key="provider.id") 
-    customer_name: Optional[str] = None 
-    status: OrderStatus  
+    provider_id: Optional[int] = Field(default=None, foreign_key="provider.id")  
+    status: OrderStatus 
+    quantity:int
     order_date: datetime = Field(default_factory=datetime.utcnow) 
+    name: str
+    price:float
+    category: Optional[str] = None
    
  
 class OrderItem(SQLModel, table=True): 
