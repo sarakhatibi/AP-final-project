@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from database.connection import get_db
 from schemas.user import UserCreate
-from model.user import User
+from model.user import User,Userwallet
 from security.hash import hash_password
 
 
@@ -31,4 +31,8 @@ def signup(user_create: UserCreate, session: Session = Depends(get_db)):
     session.add(new_user)
     session.commit()
     session.refresh(new_user)
+    new_wallet = Userwallet(id=new_user.id, userwallet=0.0)
+    session.add(new_wallet)
+    session.commit()
+    session.refresh(new_wallet)
     return {"msg": "ثبت‌ نام موفق", "user_id": new_user.id}

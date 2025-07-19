@@ -14,3 +14,8 @@ class User(SQLModel, table=True):
     username: str=Field(unique=True)
     hashed_password: str
     role:Role= Role.user
+
+class Uwallet(SQLModel, table=True):
+
+    id: Optional[int] = Field(default=None, primary_key=True)  
+    userwallet: float = 0.0

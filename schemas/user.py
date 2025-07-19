@@ -29,5 +29,11 @@ class UserUpdate(SQLModel):
 
 
 
+class Userwallet(SQLModel):
+    
+    id: int 
+    userwallet: float = 0.0
+
+
 
    
