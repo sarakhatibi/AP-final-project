@@ -9,6 +9,7 @@ from .inventory_alert import router as inventory_alert_router
 from .filter_price_product import router as filter_price_product_router
 from .show_by_price import router as show_by_price_router
 from .showall_by_name import router as showall_by_name_router
+from .low_stock import router as low_stock_router
 
 router = APIRouter()
 
@@ -22,3 +23,4 @@ router.include_router(inventory_alert_router, prefix="", tags=["Products - Inven
 router.include_router(filter_price_product_router, prefix="", tags=["Products - Filter by Price"])
 router.include_router(show_by_price_router, prefix="", tags=["Products - show_by_price"])
 router.include_router(showall_by_name_router, prefix="", tags=["Products - showall_by_name"])
+router.include_router(low_stock_router, prefix="", tags=["Products - low_stock"])
