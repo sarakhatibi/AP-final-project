@@ -46,7 +46,7 @@ def create_order(
         product_name=product.name,
         quantity=order_data.quantity,
         unit_price=product.price,
-        status=OrderStatus.Draft,
+        status=OrderStatus.draf,
         order_date=datetime.utcnow()
     )
     db.add(new_order)

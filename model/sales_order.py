@@ -13,3 +13,4 @@ class OrderItem(SQLModel, table=True):
     unit_proice:float
     order_date: datetime = Field(default_factory=datetime.utcnow) 
     product_name:str
+    user_id: int = Field(foreign_key="userwallet.id")

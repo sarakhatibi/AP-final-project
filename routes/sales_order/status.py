@@ -11,9 +11,9 @@ def update_order_status(order_id: int, new_status: OrderStatus, db: Session = De
     if not order:
         raise HTTPException(status_code=404, detail="سفارش پیدا نشد.")
     
-    OrderItem.status = new_status
-    db.add(OrderItem)
+    order.status = new_status
+    db.add(order)
     db.commit()
-    db.refresh(OrderItem)
+    db.refresh(order)
     
-    return {"message": "وضعیت سفارش با موفقیت تغییر کرد", "order_id": order_id, "new_status": OrderItem.status}
+    return {"message": "وضعیت سفارش با موفقیت تغییر کرد", "order_id": order_id, "new_status": order.status}

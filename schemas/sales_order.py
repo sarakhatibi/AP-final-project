@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 
 
-class OrderCreate(BaseModel):
+class  OrdersalesCreate(BaseModel):
     order_id: int
     product_id: int
     user_id: int
