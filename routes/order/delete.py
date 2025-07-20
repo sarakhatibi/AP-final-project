@@ -12,4 +12,7 @@ def delete_order(order_id: int, session: Session = Depends(get_db)):
     session.delete(order)
     session.commit()
 
-    return {"message": "Order deleted successfully."}
+    return {
+    "message": "Order deleted successfully.",
+    "deleted_order_id": order_id
+}
