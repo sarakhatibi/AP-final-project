@@ -42,6 +42,7 @@ def create_order(
    
     new_order = OrderItem(
         order_id=order_data.order_id,
+        user_id=order_data.user_id,
         product_id=product.id,
         product_name=product.name,
         quantity=order_data.quantity,

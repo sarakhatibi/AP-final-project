@@ -9,8 +9,8 @@ class OrderItem(SQLModel, table=True):
     sales_id: Optional[int] = Field(default=None, primary_key=True) 
     product_id: int = Field(foreign_key="product.id")
     quantity: int 
-    status: OrderStatus 
-    unit_proice:float
+    status: OrderStatus = Field(default=OrderStatus.draft)
+    unit_price:float
     order_date: datetime = Field(default_factory=datetime.utcnow) 
     product_name:str
     user_id: int = Field(foreign_key="userwallet.id")
