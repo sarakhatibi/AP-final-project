@@ -72,9 +72,11 @@
     <h2>افزودن محصول جدید</h2>
     <input type="text" id="sku" placeholder="کد محصول (SKU)">
     <input type="text" id="name" placeholder="نام محصول">
-    <textarea id="description" placeholder="توضیحات محصول"></textarea>
     <input type="number" id="price" placeholder="قیمت">
     <input type="number" id="quantity" placeholder="تعداد موجودی">
+    <input type="number" id="min_threshold" placeholder="حداقل موجودی قابل قبول">
+    <input type="text" id="category" placeholder="دسته‌بندی محصول (مثلاً دیجیتال)">
+    <input type="text" id="image_url" placeholder="لینک تصویر محصول (اختیاری)">
     <button onclick="addProduct()">ثبت محصول</button>
     <div id="response"></div>
   </div>
@@ -90,11 +92,17 @@
       const data = {
         sku: document.getElementById("sku").value,
         name: document.getElementById("name").value,
-        description: document.getElementById("description").value,
         price: parseFloat(document.getElementById("price").value),
-        quantity: parseInt(document.getElementById("quantity").value)
-      };
+        quantity: parseInt(document.getElementById("quantity").value),
+        min_threshold: parseInt(document.getElementById("min_threshold").value),
+        category: document.getElementById("category").value,
+        image_url: document.getElementById("image_url").value
 
+      };
+      if (!data.sku || !data.name || isNaN(data.price)) {
+          document.getElementById("response").innerText = "❌ لطفاً فیلدهای اجباری را کامل کنید.";
+      return;
+     }
       fetch("http://localhost:8000/products/add", {
         method: "POST",
         headers: {

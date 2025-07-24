@@ -9,6 +9,8 @@ class UserCreate(SQLModel):
     email: EmailStr=Field(unique=True)
     username: str=Field(unique=True)
     password: Optional[str] = Field(default=None, min_length=8)
+    role: Optional[str] = "user"
+
 
 class UserLogin(SQLModel):
     username: str
