@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>ورود به سیستم</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(to right, #f0f4f7, #d9e2ec);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+      margin: 0;
+    }
+    .container {
+      background-color: #ffffff;
+      padding: 30px 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+    h2 {
+      margin-bottom: 15px;
+      color: #1f2937;
+      font-size: 22px;
+      text-align: center;
+    }
+    input {
+      margin: 8px 0;
+      padding: 10px;
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      font-size: 15px;
+      transition: border-color 0.3s;
+    }
+    input:focus {
+      border-color: #60a5fa;
+      outline: none;
+    }
+    button {
+      background-color: #2563eb;
+      color: white;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #1d4ed8;
+    }
+    #response {
+      margin-top: 15px;
+      background: #e2e8f0;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      color: #1e293b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>ورود به حساب کاربری</h2>
+    <input type="text" id="login_username" placeholder="نام کاربری">
+    <input type="password" id="login_password" placeholder="رمز عبور">
+    <button onclick="login()">ورود</button>
+    <div id="response"></div>
+  </div>
+
+  <script>
+    function login() {
+      const data = {
+        username: document.getElementById("login_username").value,
+        password: document.getElementById("login_password").value
+      };
+
+      fetch("http://localhost:8000/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(json => {
+        if (json.access_token) {
+          localStorage.setItem("token", json.access_token);
+          document.getElementById("response").innerText = "✅ ورود موفق! توکن ذخیره شد.";
+        } else {
+          document.getElementById("response").innerText = json.detail || "❌ ورود ناموفق.";
+        }
+      })
+      .catch(err => {
+        document.getElementById("response").innerText = "⚠️ خطا در اتصال به سرور: " + err;
+      });
+    }
+  </script>
+</body>
+</html>

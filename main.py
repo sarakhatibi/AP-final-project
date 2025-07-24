@@ -5,6 +5,7 @@ from routes.user import router as user_router
 from routes.product import router as product_router
 from routes.sales_order import router as sales_order_router
 from routes.report import provider_report
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app=FastAPI()
@@ -28,3 +29,12 @@ app.include_router(product_router, prefix="/products", tags=["products"])
 app.include_router(sales_order_router, prefix="/sales_order", tags=["sales_order"])
 app.include_router(provider_report.router)
 
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
