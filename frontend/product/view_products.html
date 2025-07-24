@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>لیست محصولات</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma;
+      background: linear-gradient(to right, #f1f5f9, #e2e8f0);
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      direction: rtl;
+    }
+    .container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      width: 100%;
+      max-width: 500px;
+    }
+    h2 {
+      text-align: center;
+      color: #1e293b;
+      margin-bottom: 20px;
+      font-size: 22px;
+    }
+    button {
+      background-color: #2563eb;
+      color: white;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      margin: 6px 0;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1d4ed8;
+    }
+    .product-card {
+      background-color: #f1f5f9;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 12px;
+    }
+    .product-name {
+      font-weight: bold;
+      color: #1e40af;
+      margin-bottom: 6px;
+    }
+    .price {
+      color: #059669;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📦 لیست محصولات</h2>
+    <button onclick="loadProducts('price')">مرتب‌سازی بر اساس قیمت</button>
+    <button onclick="loadProducts('name')">مرتب‌سازی بر اساس نام</button>
+    <button onclick="loadProducts()">نمایش همه</button>
+    
+    <div id="product-list"></div>
+  </div>
+
+  <script>
+    function loadProducts(sortBy = null) {
+      const token = localStorage.getItem("token"); // اگه auth فعاله
+      let url = "http://localhost:8000/products";
+      if (sortBy === "price") url += "?sort=price";
+      else if (sortBy === "name") url += "?sort=name";
+
+      fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        const list = document.getElementById("product-list");
+        list.innerHTML = "";
+
+        data.forEach(item => {
+          const card = document.createElement("div");
+          card.className = "product-card";
+          card.innerHTML = `
+            <div class="product-name">${item.name}</div>
+            <div>کد کالا: ${item.sku}</div>
+            <div class="price">قیمت: ${item.price.toLocaleString()} تومان</div>
+            <div>تعداد: ${item.quantity}</div>
+            <div>توضیحات: ${item.description || '-'}</div>
+          `;
+          list.appendChild(card);
+        });
+      })
+      .catch(err => {
+        document.getElementById("product-list").innerHTML =
+          `<div class="product-card">⚠️ خطا در دریافت داده‌ها: ${err}</div>`;
+      });
+    }
+
+    window.onload = () => loadProducts();
+  </script>
+</body>
+</html>
