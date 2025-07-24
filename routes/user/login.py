@@ -17,4 +17,7 @@ def login(credentials: UserLogin, session: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="نام کاربری یا رمز اشتباه است")
     
     token = create_access_token({"sub": str(user.id), "role": user.role})
-    return {"access_token": token, "token_type": "bearer"}
+    return {
+    "access_token": token,
+    "token_type": "bearer",
+    "role": user.role  }
