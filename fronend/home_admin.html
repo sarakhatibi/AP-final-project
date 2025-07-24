@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>داشبورد ادمین</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(to right, #fdfbfb, #ebedee);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+      margin: 0;
+    }
+    .container {
+      background-color: #ffffff;
+      padding: 30px 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: #1f2937;
+      font-size: 22px;
+    }
+    button {
+      background-color: #2563eb;
+      color: white;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      margin: 8px 0;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #1d4ed8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🎉 خوش‌آمدی ادمین عزیز!</h2>
+    <button onclick="goTo('add_product.html')">➕ افزودن محصول</button>
+    <button onclick="goTo('view_products.html')">📋 مشاهده محصولات</button>
+    <button onclick="logout()">🔓 خروج از حساب</button>
+  </div>
+
+  <script>
+    function goTo(page) {
+      window.location.href = page;
+    }
+
+    function logout() {
+      localStorage.removeItem("token");
+      alert("✅ خروج انجام شد.");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>
