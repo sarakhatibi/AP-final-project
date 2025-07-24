@@ -3,17 +3,11 @@
   <meta charset="UTF-8">
   <title>ورود به سیستم</title>
   <style>
-<<<<<<< Updated upstream
     @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap');
 
     body {
   font-family: 'Vazirmatn', sans-serif;
   background: linear-gradient(to right, #fdf5ec, #d5eae2);
-=======
- body {
-  font-family: "Segoe UI", Tahoma, sans-serif;
-  background-color: #f6e9d7; /* کرم پررنگ و گرم */
->>>>>>> Stashed changes
   display: flex;
   justify-content: center;
   align-items: center;
@@ -21,7 +15,6 @@
   direction: rtl;
   margin: 0;
 }
-<<<<<<< Updated upstream
 
 .container {
   background-color: #ffffff;
@@ -84,39 +77,6 @@ button:hover {
   color: #1e293b;
   text-align: center;
 }
-=======
-button {
-  background-color: #166534; /* سبز دلخواه برای دکمه ورود */
-  color: white;
-  padding: 10px;
-  width: 100%;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  margin-top: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-button:hover {
-  background-color: #14532d;
-}
-.container {
-  background-color: #ffffff;
-  padding: 30px 25px;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-  max-width: 400px;
-  width: 100%;
-}
-    #response {
-      margin-top: 15px;
-      background: #e2e8f0;
-      padding: 10px;
-      border-radius: 5px;
-      font-size: 14px;
-      color: #1e293b;
-    }
->>>>>>> Stashed changes
   </style>
 </head>
 <body>
@@ -145,11 +105,7 @@ button:hover {
         if (json.access_token) {
           localStorage.setItem("token", json.access_token);
           localStorage.setItem("role", json.role);
-<<<<<<< Updated upstream
           document.getElementById("response").innerText = "✅ ورود موفق! خوش اومدی 🎉";
-=======
-          document.getElementById("response").innerText = "✅ ورود موفق! خوش آمدید.";
->>>>>>> Stashed changes
 
           setTimeout(() => {
             if (json.role === "admin") {
@@ -161,11 +117,7 @@ button:hover {
         } else {
           document.getElementById("response").innerText = json.detail || "❌ ورود ناموفق.";
         }
-<<<<<<< Updated upstream
       })
-=======
-      });
->>>>>>> Stashed changes
     }
   </script>
 </body>

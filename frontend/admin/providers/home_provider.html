@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>پنل تأمین‌کننده‌ها</title>
+  <style>
+    body {
+      font-family: 'Vazirmatn', 'Segoe UI', Tahoma;
+      background: linear-gradient(to right, #fdf5ec, #d5eae2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+      margin: 0;
+    }
+
+    .panel {
+      background-color: #ffffff;
+      padding: 40px 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+      max-width: 420px;
+      width: 100%;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2f5d55;
+      font-size: 24px;
+      margin-bottom: 28px;
+      border-bottom: 1px solid #c3dbd4;
+      padding-bottom: 10px;
+    }
+
+    .btn {
+      display: block;
+      text-align: center;
+      background-color: #89b9a6;
+      color: white;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 15px;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .btn:hover {
+      background-color: #6fa795;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <h2>مدیریت تأمین‌کننده‌ها</h2>
+
+    <a href="new-order.html" class="btn">🛒 ثبت سفارش جدید</a>
+    <a href="add-provider.html" class="btn">➕ اضافه کردن تأمین‌ کننده‌ها</a>
+    <a href="delete-provider.html" class="btn">🗑 حذف تأمین‌ کننده‌ها</a>
+    <a href="list-providers.html" class="btn">📄 نمایش لیست تأمین‌ کننده‌ها</a>
+    <a href="edit-provider.html" class="btn">📝 ویرایش تأمین‌ کننده‌ها</a>
+    <a href="view-provider-id.html" class="btn">🔍 نمایش تأمین‌ کننده با شناسه</a>
+  </div>
+</body>
+</html>
