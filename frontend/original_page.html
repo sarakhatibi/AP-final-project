@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>صفحه اصلی</title>
+  <style>
+    body {
+      font-family: "Vazirmatn", "Segoe UI", Tahoma;
+      background: linear-gradient(to right, #fdf5ec, #d5eae2);
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      direction: rtl;
+    }
+    .container {
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+    h2 {
+      color: #2f5d55;
+      font-size: 24px;
+      margin-bottom: 30px;
+    }
+    button {
+      background-color: #89b9a6;
+      color: white;
+      padding: 12px;
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-top: 12px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #6fa795;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🌿 خوش آمدید!</h2>
+    <button onclick="goTo('signup.html')">ثبت‌ نام</button>
+    <button onclick="goTo('login.html')">ورود</button>
+  </div>
+
+  <script>
+    function goTo(page) {
+      window.location.href = page;
+    }
+  </script>
+</body>
+</html>
