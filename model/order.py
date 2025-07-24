@@ -8,10 +8,10 @@ from datetime import datetime
 
 
 class OrderStatus(str, Enum):
-    draft = "Draft"
-    sent = "Sent"
-    recived = "Recived"
-    closed = "Closed"
+    draft = "draft"
+    sent = "sent"
+    received = "received"
+    closed = "closed"
 
 
 class OrderType(str, Enum):
@@ -36,7 +36,7 @@ class OrderItem(SQLModel, table=True):
     product_id: int = Field(foreign_key="product.id") 
     quantity: int 
     unit_price: float
-
+    status: OrderStatus = Field(default=OrderStatus.draft) 
 
 
 
