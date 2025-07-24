@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>ثبت سفارش جدید</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma;
+      background: linear-gradient(to left, #fdf6ef, #e6f4ee);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 60px;
+      min-height: 100vh;
+      direction: rtl;
+      margin: 0;
+    }
+
+    .form-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+      width: 100%;
+      max-width: 480px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2e6651;
+      margin-bottom: 25px;
+      font-size: 24px;
+    }
+
+    label {
+      font-weight: bold;
+      margin-bottom: 6px;
+      display: block;
+      color: #333;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 18px;
+      border-radius: 8px;
+      border: 1px solid #bbb;
+      font-size: 15px;
+    }
+
+    button {
+      background-color: #2e7d67;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #256f5a;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>📝 ثبت سفارش جدید</h2>
+    <form id="orderForm">
+      <label for="name">نام محصول</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="category">دسته‌بندی</label>
+      <input type="text" id="category" name="category">
+
+      <label for="provider_id">شناسه تأمین‌کننده</label>
+      <input type="number" id="provider_id" name="provider_id" required>
+
+      <label for="status">وضعیت سفارش</label>
+      <select id="status" name="status" required>
+        <option value="pending">در انتظار</option>
+        <option value="processing">در حال پردازش</option>
+        <option value="delivered">تحویل شده</option>
+        <option value="canceled">لغو شده</option>
+      </select>
+
+      <label for="quantity">تعداد</label>
+      <input type="number" id="quantity" name="quantity" min="1" required>
+
+      <label for="price">قیمت</label>
+      <input type="number" id="price" name="price" min="0" step="1000" required>
+
+      <label for="expected_date">تاریخ مورد انتظار تحویل</label>
+      <input type="date" id="expected_date" name="expected_date">
+
+      <label for="delivery_date">تاریخ واقعی تحویل</label>
+      <input type="date" id="delivery_date" name="delivery_date">
+
+      <button type="submit">ثبت سفارش ✅</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("orderForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const data = Object.fromEntries(new FormData(e.target).entries());
+
+      // تبدیل تاریخ‌ها به ISO
+      if (data.expected_date) data.expected_date += "T00:00:00";
+      if (data.delivery_date) data.delivery_date += "T00:00:00";
+
+      data.quantity = parseInt(data.quantity);
+      data.price = parseFloat(data.price);
+      data.provider_id = parseInt(data.provider_id);
+
+      try {
+        const res = await fetch("http://localhost:8000/add", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        alert(result.message || "✅ ثبت شد");
+        e.target.reset();
+      } catch (err) {
+        alert("❌ خطا در ثبت سفارش: " + err.message);
+      }
+    });
+  </script>
+</body>
+</html>
