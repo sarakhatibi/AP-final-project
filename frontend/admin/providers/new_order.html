@@ -4,59 +4,63 @@
   <meta charset="UTF-8">
   <title>ثبت سفارش جدید</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
+      margin: 0;
+      padding: 0;
       font-family: "Segoe UI", Tahoma;
       background: linear-gradient(to left, #fdf6ef, #e6f4ee);
+      direction: rtl;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      padding-top: 60px;
+      align-items: center;
       min-height: 100vh;
-      direction: rtl;
-      margin: 0;
     }
 
     .form-container {
-      background: #fff;
+      width: 100%;
+      max-width: 480px;
+      background-color: #fff;
       padding: 30px;
       border-radius: 15px;
       box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-      width: 100%;
-      max-width: 480px;
     }
 
     h2 {
       text-align: center;
       color: #2e6651;
-      margin-bottom: 25px;
       font-size: 24px;
+      margin-bottom: 25px;
     }
 
     label {
       font-weight: bold;
-      margin-bottom: 6px;
       display: block;
+      margin-bottom: 6px;
       color: #333;
     }
 
     input, select {
       width: 100%;
       padding: 10px;
-      margin-bottom: 18px;
-      border-radius: 8px;
-      border: 1px solid #bbb;
       font-size: 15px;
+      margin-bottom: 18px;
+      border: 1px solid #bbb;
+      border-radius: 8px;
     }
 
     button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
       background-color: #2e7d67;
       color: #fff;
       border: none;
-      padding: 12px;
-      font-size: 16px;
       border-radius: 10px;
       cursor: pointer;
-      width: 100%;
     }
 
     button:hover {
@@ -104,10 +108,8 @@
   <script>
     document.getElementById("orderForm").addEventListener("submit", async function(e) {
       e.preventDefault();
-
       const data = Object.fromEntries(new FormData(e.target).entries());
 
-      // تبدیل تاریخ‌ها به ISO
       if (data.expected_date) data.expected_date += "T00:00:00";
       if (data.delivery_date) data.delivery_date += "T00:00:00";
 
