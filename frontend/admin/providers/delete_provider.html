@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>حذف تأمین‌کننده</title>
+  <style>
+    body {
+      font-family: "Vazir", sans-serif;
+      background: linear-gradient(to bottom, #e8f2ee, #f3eee5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 24px;
+      direction: rtl;
+      margin: 0;
+    }
+
+    .form-box {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 8px 20px rgba(112, 158, 136, 0.3);
+      max-width: 480px;
+      width: 100%;
+      border: 2px solid #cfdcd5;
+    }
+
+    h2 {
+      text-align: center;
+      color: #124d26;
+      margin-bottom: 25px;
+      font-size: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      color: #405f50;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 18px;
+      border-radius: 8px;
+      border: 1px solid #accabc;
+      font-size: 14px;
+      background-color: #f7fdfb;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #709e88;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      width: 100%;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #5c8672;
+    }
+
+    .icon {
+      margin-left: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-box">
+    <h2>🗑️<span class="icon"></span> حذف تأمین‌کننده</h2>
+    <form id="deleteForm">
+      <label for="provider_id">شناسه تأمین‌کننده:</label>
+      <input type="number" id="provider_id" name="provider_id" min="1" required>
+
+      <button type="submit">حذف </button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("deleteForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const id = document.getElementById("provider_id").value;
+
+      try {
+        const response = await fetch(`http://localhost:8000/providers/delete/${id}`, {
+          method: "DELETE"
+        });
+
+        const result = await response.json();
+        alert(result.message || "✅ تأمین‌کننده با موفقیت حذف شد");
+        e.target.reset();
+      } catch (error) {
+        alert("❌ خطا در حذف تأمین‌کننده: " + error.message);
+      }
+    });
+  </script>
+</body>
+</html>
