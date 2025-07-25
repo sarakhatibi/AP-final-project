@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>افزودن سفارش</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(to left, #fdf6ef, #e6f4ee);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+      margin: 0;
+    }
+
+    .dashboard {
+      background-color: #ffffff;
+      padding: 35px 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(125, 174, 160, 0.3);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h2 {
+      color: #2e6651;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #b9cfc7;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus, select:focus {
+      border-color: #5f927e;
+      outline: none;
+    }
+
+    button {
+      background-color: #5f927e;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background-color: #4d7c6a;
+      transform: translateY(-1px);
+    }
+
+    #response {
+      margin-top: 15px;
+      color: #2e6651;
+      font-size: 14px;
+    }
+
+    #response button {
+      background-color: #e6a57e;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    #response button:hover {
+      background-color: #d8926c;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <h2>➕ افزودن سفارش</h2>
+    <input type="text" id="name" placeholder="نام کالا">
+    <input type="number" id="price" placeholder="قیمت">
+    <input type="number" id="quantity" placeholder="تعداد">
+    <input type="number" id="provider_id" placeholder="شناسه تامین‌کننده">
+    <select id="status">
+      <option value="draft">پیش‌نویس</option>
+      <option value="sent">ارسال‌شده</option>
+      <option value="recived">دریافت‌شده</option>
+      <option value="closed">بسته‌شده</option>
+    </select>
+    <input type="text" id="category" placeholder="دسته‌بندی (اختیاری)">
+    <button onclick="submitOrder()">ثبت سفارش</button>
+    <div id="response"></div>
+  </div>
+
+  <script>
+    function submitOrder() {
+      const token = localStorage.getItem("token");
+      const order = {
+        name: document.getElementById("name").value,
+        price: parseFloat(document.getElementById("price").value),
+        quantity: parseInt(document.getElementById("quantity").value),
+        provider_id: parseInt(document.getElementById("provider_id").value),
+        status: document.getElementById("status").value,
+        category: document.getElementById("category").value || null
+      };
+
+      fetch("http://localhost:8000/orders/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(order)
+      })
+      .then(res => res.json())
+      .then(data => {
+        const responseBox = document.getElementById("response");
+        responseBox.innerHTML = `
+          <div>✅ سفارش با موفقیت ثبت شد</div>
+          <div>کالا: ${data.order.name}</div>
+          <div>شناسه: ${data.order.id}</div>
+          <button onclick="history.back()">🔙 برگشت</button>
+        `;
+      })
+      .catch(err => {
+        document.getElementById("response").innerHTML =
+          `<div>⚠️ خطا در ثبت سفارش: ${err}</div>`;
+      });
+    }
+  </script>
+</body>
+</html>
