@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>افزودن تأمین‌کننده</title>
+  <style>
+  body {
+  font-family: "Segoe UI", Tahoma;
+  background: #f6f9f7;
+  display: flex;
+  justify-content: center;
+  align-items: center;         /* از flex-start به center تغییر می‌کنیم */
+  min-height: 100vh;           /* برای ارتفاع کامل صفحه */
+  direction: rtl;
+  margin: 0;
+  padding: 0;                  /* حذف padding چون margin فرم کافیه */
+}
+
+.form-box {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(75, 150, 130, 0.2);
+  max-width: 480px;
+  width: 100%;
+  margin: 40px auto;           /* این خط باعث میشه از دو طرف وسط چین بشه */
+  box-sizing: border-box;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #3b6f5b;
+}
+
+input, select {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid #bbcfc9;
+  font-size: 15px;
+  box-sizing: border-box; /* مهم برای هم‌ترازی */
+}
+   
+
+    h2 {
+      text-align: center;
+      color: #2e6651;
+      margin-bottom: 25px;
+    }
+      
+    button {
+      background-color: #6fa795;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      width: 100%;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #5a8e80;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-box">
+    <h2>➕ ثبت تأمین‌کننده جدید</h2>
+    <form id="providerForm">
+      <label for="name">نام تأمین‌کننده:</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="contact">شماره تماس:</label>
+      <input type="text" id="contact" name="contact">
+
+      <label for="email">ایمیل:</label>
+      <input type="email" id="email" name="email">
+
+      <label for="delivery_time">زمان تحویل (روز):</label>
+      <input type="number" id="delivery_time" name="delivery_time" min="1">
+
+      <label for="active">تامین کننده فعال است؟</label>
+      <select id="active" name="active">
+        <option value="true">بله ✅</option>
+        <option value="false">خیر ❌</option>
+      </select>
+
+      <button type="submit">ارسال اطلاعات</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("providerForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+
+      // تبدیل رشته به مقدار بولی برای active
+      data.active = data.active === "true";
+
+      try {
+        const response = await fetch("http://localhost:8000/providers/add", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        alert(result.message || "✅ تأمین‌کننده با موفقیت اضافه شد");
+        e.target.reset();
+      } catch (error) {
+        alert("❌ خطا در ثبت تأمین‌کننده: " + error.message);
+      }
+    });
+  </script>
+</body>
+</html>
