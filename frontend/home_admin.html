@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <title>داشبورد ادمین</title>
-  <style>
+ <style>
     body {
       font-family: "Segoe UI", Tahoma, sans-serif;
-      background: linear-gradient(to right, #fdfbfb, #ebedee);
+      background: linear-gradient(to left, #fdf6ef, #e6f4ee);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -14,43 +14,60 @@
       direction: rtl;
       margin: 0;
     }
-    .container {
+
+    .dashboard {
       background-color: #ffffff;
-      padding: 30px 25px;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      max-width: 400px;
+      padding: 35px 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(125, 174, 160, 0.3);
+      max-width: 500px;
       width: 100%;
+    }
+
+    h1 {
       text-align: center;
+      color: #2e6651;
+      font-size: 26px;
+      margin-bottom: 25px;
     }
-    h2 {
-      margin-bottom: 20px;
-      color: #1f2937;
-      font-size: 22px;
+
+    ul {
+      list-style: none;
+      padding: 0;
     }
-    button {
-      background-color: #2563eb;
-      color: white;
-      padding: 10px;
-      width: 100%;
-      border: none;
-      border-radius: 5px;
+
+    li {
+      background-color: #89b9a6;
+      color: #fff;
+      padding: 14px;
+      margin: 10px 0;
+      border-radius: 10px;
       font-size: 16px;
-      margin: 8px 0;
+      
       cursor: pointer;
-      transition: background-color 0.3s;
+      text-align: center;
+      transition: background-color 0.3s, transform 0.2s;
     }
-    button:hover {
-      background-color: #1d4ed8;
+
+    li:hover {
+      background-color: #74ab94;
+      transform: translateY(-2px);
     }
+
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>🎉 خوش‌آمدی ادمین عزیز!</h2>
-    <button onclick="goTo('product/add_product.html')">➕ افزودن محصول</button>
-    <button onclick="goTo('product/view_products.html')">📋 مشاهده محصولات</button>
-    <button onclick="logout()">🔓 خروج از حساب</button>
+   
+      <h1> 🌿به قسمت ادمین خوش آمدید</h1>
+    <ul>
+      <li onclick="location.href='products.html'">🛍️ محصولات</li>
+      <li onclick="location.href='suppliers.html'">🏢 تامین‌کنندگان</li>
+      <li onclick="location.href='users.html'">👥 مدیریت کاربران</li>
+      <li onclick="location.href='reports.html'">📊 گزارش‌ها</li>
+      <li onclick="location.href='orders.html'">📝 سفارش خرید</li>
+    </ul>
+
   </div>
 
   <script>
