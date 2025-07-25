@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>حذف سفارش</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(to left, #fdf6ef, #e6f4ee);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+      margin: 0;
+    }
+
+    .dashboard {
+      background-color: #ffffff;
+      padding: 35px 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(125, 174, 160, 0.3);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h2 {
+      color: #2e6651;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #b9cfc7;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    input:focus {
+      border-color: #5f927e;
+      outline: none;
+    }
+
+    button {
+      background-color: #b85c5c;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background-color: #a74949;
+      transform: translateY(-1px);
+    }
+
+    #response {
+      margin-top: 15px;
+      color: #2e6651;
+      font-size: 14px;
+    }
+
+    #response button {
+      background-color: #e6a57e;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    #response button:hover {
+      background-color: #d8926c;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <h2>🗑️ حذف سفارش</h2>
+    <label for="order_id">شناسه سفارش:</label>
+    <input type="number" id="order_id" placeholder="مثلاً 123">
+    <button onclick="deleteOrder()">حذف سفارش</button>
+    <div id="response"></div>
+  </div>
+
+  <script>
+    function deleteOrder() {
+      const token = localStorage.getItem("token");
+      const id = document.getElementById("order_id").value;
+
+      fetch(`http://localhost:8000/orders/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("response").innerHTML = `
+          <div>✅ سفارش ${data.deleted_order_id} با موفقیت حذف شد</div>
+          <button onclick="history.back()">🔙 برگشت</button>
+        `;
+      })
+      .catch(err => {
+        document.getElementById("response").innerHTML =
+          `<div>⚠️ خطا در حذف سفارش: ${err}</div>`;
+      });
+    }
+  </script>
+</body>
+</html>
