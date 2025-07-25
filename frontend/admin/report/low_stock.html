@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>🟠 کالاهای کم‌موجودی</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma;
+      background: linear-gradient(to left, #fdf6ef, #e6f4ee);
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(125,174,160,0.18);
+      margin-top: 80px;
+      width: 100%;
+      max-width: 540px;
+      box-sizing: border-box;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2f5d55;
+      font-size: 24px;
+      margin-bottom: 24px;
+    }
+
+    .alert-box {
+      background: #fdf1f1;
+      border: 1px solid #e0bebe;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .alert-box p {
+      margin: 8px 0;
+      font-size: 15px;
+      color: #405f50;
+    }
+
+    .alert {
+      color: #d33;
+      font-weight: bold;
+    }
+
+    .loader {
+      text-align: center;
+      color: #89b9a6;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🟠 کالاهای کم‌موجودی</h2>
+    <div id="alerts"></div>
+    <div class="loader" id="loading">در حال دریافت اطلاعات...</div>
+  </div>
+
+  <script>
+    async function fetchLowStock() {
+      try {
+        const res = await fetch("http://localhost:8000/products/low-stock");
+        const data = await res.json();
+
+        const box = document.getElementById("alerts");
+        const loading = document.getElementById("loading");
+        loading.style.display = "none";
+
+        if (data.length === 0) {
+          box.innerHTML = "<p>✅ موجودی همه کالاها مناسب است.</p>";
+          return;
+        }
+
+        data.forEach(item => {
+          const el = document.createElement("div");
+          el.className = "alert-box";
+          el.innerHTML = `
+            <p><strong>نام کالا:</strong> ${item.name}</p>
+            <p><strong>کد SKU:</strong> ${item.sku}</p>
+            <p><strong>موجودی:</strong> ${item.quantity}</p>
+            <p><strong>حد سفارش:</strong> ${item.min_threshold}</p>
+            <p class="alert">⚠️ ${item.alert}</p>
+          `;
+          box.appendChild(el);
+        });
+      } catch (error) {
+        document.getElementById("loading").innerText = "❌ خطا در دریافت اطلاعات";
+      }
+    }
+
+    fetchLowStock();
+  </script>
+</body>
+</html>
