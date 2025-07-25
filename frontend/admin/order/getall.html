@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>لیست سفارش‌ها</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(to left, #fdf6ef, #e6f4ee);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+      margin: 0;
+    }
+
+    .dashboard {
+      background-color: #ffffff;
+      padding: 35px 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(125, 174, 160, 0.3);
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h2 {
+      color: #2e6651;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .order-card {
+      background-color: #89b9a6;
+      color: white;
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      text-align: right;
+    }
+
+    .pagination-btn {
+      margin-top: 15px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    button {
+      background-color: #5f927e;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background-color: #4d7c6a;
+      transform: translateY(-1px);
+    }
+
+    #response button {
+      background-color: #e6a57e;
+      margin-top: 15px;
+    }
+
+    #response button:hover {
+      background-color: #d8926c;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <h2>📋 لیست سفارش‌ها</h2>
+    <div id="order-list"></div>
+
+    <div class="pagination-btn">
+      <button onclick="loadOrders(page - 1)">صفحه قبلی</button>
+      <button onclick="loadOrders(page + 1)">صفحه بعدی</button>
+    </div>
+
+    <div id="response">
+      <button onclick="history.back()">🔙 برگشت</button>
+    </div>
+  </div>
+
+  <script>
+    let page = 1;
+    const limit = 5;
+
+    function loadOrders(targetPage) {
+      if (targetPage < 1) return;
+      page = targetPage;
+      const token = localStorage.getItem("token");
+      const url = `http://localhost:8000/orders/getall?page=${page}&limit=${limit}`;
+
+      fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("سفارشی یافت نشد.");
+        return res.json();
+      })
+      .then(data => {
+        const list = document.getElementById("order-list");
+        list.innerHTML = "";
+
+        data.forEach(order => {
+          const card = document.createElement("div");
+          card.className = "order-card";
+          card.innerHTML = `
+            <div><strong>نام:</strong> ${order.name}</div>
+            <div><strong>قیمت:</strong> ${order.price.toLocaleString()} تومان</div>
+            <div><strong>تعداد:</strong> ${order.quantity}</div>
+            <div><strong>شناسه تامین‌کننده:</strong> ${order.provider_id}</div>
+            <div><strong>تاریخ سفارش:</strong> ${new Date(order.order_date).toLocaleDateString()}</div>
+            <div><strong>وضعیت:</strong> ${order.status}</div>
+            <div><strong>دسته‌بندی:</strong> ${order.category || '-'}</div>
+          `;
+          list.appendChild(card);
+        });
+      })
+      .catch(err => {
+        document.getElementById("order-list").innerHTML =
+          `<div class="order-card">⚠️ ${err.message}</div>`;
+      });
+    }
+
+    window.onload = () => loadOrders(page);
+  </script>
+</body>
+</html>
