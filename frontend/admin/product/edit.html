@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>ویرایش محصول</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(to left, #fdf6ef, #e6f4ee);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+      margin: 0;
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 35px 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(125, 174, 160, 0.3);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2e6651;
+      font-size: 26px;
+      margin-bottom: 25px;
+    }
+
+    label, input, button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+
+    input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      background-color: #89b9a6;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background-color: #74ab94;
+      transform: translateY(-2px);
+    }
+
+    #sku_result {
+      white-space: pre-wrap;
+      margin-top: 20px;
+      background-color: #f2f2f2;
+      padding: 15px;
+      border-radius: 10px;
+      color: #333;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    #sku_result button {
+      background-color: #e6a57e;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    #sku_result button:hover {
+      background-color: #d8926c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>ویرایش اطلاعات محصول</h2>
+
+    <label for="id">شناسه محصول:</label>
+    <input type="number" id="id">
+
+    <label for="name">نام:</label>
+    <input type="text" id="name">
+
+    <label for="sku">کد SKU:</label>
+    <input type="text" id="sku">
+
+    <label for="price">قیمت:</label>
+    <input type="number" id="price">
+
+    <label for="min">حداقل موجودی قابل قبول:</label>
+    <input type="number" id="min">
+
+    <label for="category">دسته‌بندی:</label>
+    <input type="text" id="category">
+
+    <label for="image">لینک تصویر:</label>
+    <input type="text" id="image">
+
+    <label for="quantity">موجودی:</label>
+    <input type="number" id="quantity">
+
+    <button onclick="updateProduct()">💾 به‌روزرسانی</button>
+    <div id="sku_result"></div>
+  </div>
+
+  <script>
+    function updateProduct() {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        document.getElementById("sku_result").innerHTML = "❌ ابتدا وارد شوید.<br><button onclick='history.back()'>🔙 بازگشت</button>";
+        return;
+      }
+
+      const id = document.getElementById("id").value;
+      const data = {
+        name: document.getElementById("name").value || undefined,
+        sku: document.getElementById("sku").value || undefined,
+        price: document.getElementById("price").value ? parseFloat(document.getElementById("price").value) : undefined,
+        min_threshold: document.getElementById("min").value ? parseInt(document.getElementById("min").value) : undefined,
+        category: document.getElementById("category").value || undefined,
+        image: document.getElementById("image").value || undefined,
+        quantity: document.getElementById("quantity").value ? parseInt(document.getElementById("quantity").value) : undefined
+      };
+
+      fetch(`http://localhost:8000/products/update/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(json => {
+        if (json.detail) {
+          document.getElementById("sku_result").innerHTML = `❌ خطا: ${json.detail}<br><button onclick='history.back()'>🔙 بازگشت</button>`;
+          return;
+        }
+
+        let result = "✅ محصول با موفقیت به‌روزرسانی شد:\n";
+        result += "نام: " + json.name + "\n";
+        result += "کد SKU: " + json.sku + "\n";
+        result += "قیمت: " + json.price + "\n";
+        result += "موجودی: " + json.quantity + "\n";
+        result += "<button onclick='history.back()'>🔙 بازگشت</button>";
+
+        document.getElementById("sku_result").innerHTML = result;
+      })
+      .catch(err => {
+        document.getElementById("sku_result").innerHTML = "⚠️ خطا در دریافت اطلاعات: " + err + "<br><button onclick='history.back()'>🔙 بازگشت</button>";
+      });
+    }
+  </script>
+</body>
+</html>
