@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>گزارش‌ها</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma;
+      background: linear-gradient(to left, #fdf6ef, #e6f4ee);
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .report-container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+      width: 100%;
+      max-width: 480px;
+      margin: 150px auto;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    h2 {
+      color: #2f5d55;
+      margin-bottom: 30px;
+      font-size: 24px;
+    }
+
+    button {
+      background-color: #89b9a6;
+      color: white;
+      padding: 12px;
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      margin: 10px 0;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #6fa795;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="report-container">
+    <h2>📊 گزارش‌های مدیریتی</h2>
+
+    <button onclick="goTo('low-stock.html')">کالاهای کم‌ موجودی</button>
+    <button onclick="goTo('top-products.html')">پرفروش‌ ترین کالاها</button>
+    <button onclick="goTo('top-providers.html')">بهترین تأمین‌ کنندگان</button>
+    <button onclick="goTo('inventory-alerts.html')">هشدارهای انبار</button>
+
+  </div>
+
+  <script>
+    function goTo(page) {
+      window.location.href = page;
+    }
+  </script>
+
+</body>
+</html>
