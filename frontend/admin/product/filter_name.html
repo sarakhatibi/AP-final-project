@@ -69,6 +69,21 @@
       font-size: 15px;
       line-height: 1.6;
     }
+
+    #name_result button {
+      background-color: #e6a57e;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    #name_result button:hover {
+      background-color: #d8926c;
+    }
   </style>
 </head>
 <body>
@@ -83,16 +98,20 @@
   </div>
 
   <script>
+    function goBack() {
+      history.back();
+    }
+
     function searchByName() {
       const token = localStorage.getItem("token");
       if (!token) {
-        document.getElementById("name_result").innerText = "❌ ابتدا وارد شوید.";
+        document.getElementById("name_result").innerHTML = "❌ ابتدا وارد شوید.<br><button onclick='goBack()'>🔙 بازگشت به صفحه قبلی</button>";
         return;
       }
 
       const name = document.getElementById("search_name").value;
       if (!name) {
-        document.getElementById("name_result").innerText = "❌ نام محصول را وارد کنید.";
+        document.getElementById("name_result").innerHTML = "❌ نام محصول را وارد کنید.<br><button onclick='goBack()'>🔙 بازگشت به صفحه قبلی</button>";
         return;
       }
 
@@ -108,12 +127,12 @@
       .then(res => res.json())
       .then(json => {
         if (json.detail) {
-          document.getElementById("name_result").innerText = `❌ خطا: ${json.detail}`;
+          document.getElementById("name_result").innerHTML = `❌ خطا: ${json.detail}<br><button onclick='goBack()'>🔙 بازگشت به صفحه قبلی</button>`;
           return;
         }
 
         if (json.length === 0) {
-          document.getElementById("name_result").innerText = "🚫 محصولی یافت نشد.";
+          document.getElementById("name_result").innerHTML = "🚫 محصولی یافت نشد.<br><button onclick='goBack()'>🔙 بازگشت به صفحه قبلی</button>";
           return;
         }
 
@@ -130,10 +149,11 @@
             "------------------------\n";
         });
 
-        document.getElementById("name_result").innerText = result;
+        result += "<button onclick='goBack()'>🔙 بازگشت به صفحه قبلی</button>";
+        document.getElementById("name_result").innerHTML = result;
       })
       .catch(err => {
-        document.getElementById("name_result").innerText = "⚠️ خطا در دریافت اطلاعات: " + err;
+        document.getElementById("name_result").innerHTML = "⚠️ خطا در دریافت اطلاعات: " + err + "<br><button onclick='goBack()'>🔙 بازگشت به صفحه قبلی</button>";
       });
     }
   </script>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>افزودن محصول</title>
- <style>
+  <style>
     body {
       font-family: "Segoe UI", Tahoma, sans-serif;
       background: linear-gradient(to left, #fdf6ef, #e6f4ee);
@@ -15,7 +15,7 @@
       margin: 0;
     }
 
-    .dashboard {
+    .container {
       background-color: #ffffff;
       padding: 35px 30px;
       border-radius: 15px;
@@ -24,71 +24,107 @@
       width: 100%;
     }
 
-    h1 {
+    h2 {
       text-align: center;
       color: #2e6651;
       font-size: 26px;
       margin-bottom: 25px;
     }
 
-    ul {
-      list-style: none;
-      padding: 0;
+    label, input, button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      font-size: 16px;
     }
 
-    li {
+    input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
       background-color: #89b9a6;
       color: #fff;
-      padding: 14px;
-      margin: 10px 0;
+      border: none;
+      padding: 12px;
       border-radius: 10px;
-      font-size: 16px;
-      
       cursor: pointer;
-      text-align: center;
       transition: background-color 0.3s, transform 0.2s;
     }
 
-    li:hover {
+    button:hover {
       background-color: #74ab94;
       transform: translateY(-2px);
+    }
+
+    #response {
+      white-space: pre-wrap;
+      margin-top: 20px;
+      background-color: #f2f2f2;
+      padding: 15px;
+      border-radius: 10px;
+      color: #333;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    #response button {
+      background-color: #e6a57e;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    #response button:hover {
+      background-color: #d8926c;
     }
   </style>
 </head>
 <body>
-<div class="container">
-  <h2>افزودن محصول جدید</h2>
+  <div class="container">
+    <h2>افزودن محصول جدید</h2>
 
-  <label for="sku">کد محصول (SKU):</label>
-  <input type="text" id="sku">
+    <label for="sku">کد محصول (SKU):</label>
+    <input type="text" id="sku">
 
-  <label for="name">نام محصول:</label>
-  <input type="text" id="name">
+    <label for="name">نام محصول:</label>
+    <input type="text" id="name">
 
-  <label for="price">قیمت:</label>
-  <input type="number" id="price">
+    <label for="price">قیمت:</label>
+    <input type="number" id="price">
 
-  <label for="quantity">تعداد موجودی:</label>
-  <input type="number" id="quantity">
+    <label for="quantity">تعداد موجودی:</label>
+    <input type="number" id="quantity">
 
-  <label for="min_threshold">حداقل موجودی قابل قبول:</label>
-  <input type="number" id="min_threshold">
+    <label for="min_threshold">حداقل موجودی قابل قبول:</label>
+    <input type="number" id="min_threshold">
 
-  <label for="category">دسته‌بندی محصول:</label>
-  <input type="text" id="category">
+    <label for="category">دسته‌بندی محصول:</label>
+    <input type="text" id="category">
 
-  <label for="image_url">لینک تصویر محصول (اختیاری):</label>
-  <input type="text" id="image_url">
+    <label for="image_url">لینک تصویر محصول (اختیاری):</label>
+    <input type="text" id="image_url">
 
-  <button onclick="addProduct()">ثبت محصول</button>
-  <div id="response"></div>
-</div>
+    <button onclick="addProduct()">ثبت محصول</button>
+    <div id="response"></div>
+  </div>
 
   <script>
+    function goBack() {
+      history.back();
+    }
+
     function addProduct() {
       const token = localStorage.getItem("token");
       if (!token) {
-        document.getElementById("response").innerText = "❌ ابتدا وارد شوید.";
+        document.getElementById("response").innerHTML = 
+          "❌ ابتدا وارد شوید.<br><button onclick='goBack()'>🔙 بازگشت</button>";
         return;
       }
 
@@ -100,12 +136,14 @@
         min_threshold: parseInt(document.getElementById("min_threshold").value),
         category: document.getElementById("category").value,
         image_url: document.getElementById("image_url").value
-
       };
+
       if (!data.sku || !data.name || isNaN(data.price)) {
-          document.getElementById("response").innerText = "❌ لطفاً فیلدهای اجباری را کامل کنید.";
-      return;
-     }
+        document.getElementById("response").innerHTML = 
+          "❌ لطفاً فیلدهای اجباری را کامل کنید.<br><button onclick='goBack()'>🔙 بازگشت</button>";
+        return;
+      }
+
       fetch("http://localhost:8000/products/add", {
         method: "POST",
         headers: {
@@ -116,13 +154,17 @@
       })
       .then(res => res.json())
       .then(json => {
-        document.getElementById("response").innerText =
-          json.name ? `✅ محصول "${json.name}" ثبت شد.` :
-          json.detail ? `❌ خطا: ${json.detail}` :
-          JSON.stringify(json);
+        const msg = json.name 
+          ? `✅ محصول "${json.name}" ثبت شد.` 
+          : json.detail 
+            ? `❌ خطا: ${json.detail}` 
+            : JSON.stringify(json);
+
+        document.getElementById("response").innerHTML = msg + "<br><button onclick='goBack()'>🔙 بازگشت</button>";
       })
       .catch(err => {
-        document.getElementById("response").innerText = "⚠️ خطا در ارسال: " + err;
+        document.getElementById("response").innerHTML = 
+          "⚠️ خطا در ارسال: " + err + "<br><button onclick='goBack()'>🔙 بازگشت</button>";
       });
     }
   </script>

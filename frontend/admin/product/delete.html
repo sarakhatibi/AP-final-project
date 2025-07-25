@@ -68,30 +68,50 @@
       color: #2e6651;
       font-size: 14px;
     }
+
+    #response button {
+      background-color: #e6a57e;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    #response button:hover {
+      background-color: #d8926c;
+    }
   </style>
 </head>
 <body>
   <div class="dashboard">
-<h2>🗑️ حذف محصول</h2>
+    <h2>🗑️ حذف محصول</h2>
     <label for="product_id">شناسه محصول:</label>
     <input type="number" id="product_id" placeholder="مثلاً 123">
- <button onclick="deleteProduct()">حذف کن</button>
+    <button onclick="deleteProduct()">حذف کن</button>
     <div id="response"></div>
-  </div>
-
-
+ </div>
 
   <script>
+    function goBack() {
+      history.back();
+    }
+
     function deleteProduct() {
       const token = localStorage.getItem("token");
       const productId = document.getElementById("product_id").value;
 
       if (!token) {
-        document.getElementById("response").innerText = "❌ ابتدا وارد شوید.";
+        document.getElementById("response").innerHTML = 
+          "❌ ابتدا وارد شوید.<br><button onclick='goBack()'>🔙 بازگشت</button>";
         return;
       }
+
       if (!productId || isNaN(productId)) {
-        document.getElementById("response").innerText = "⚠️ شناسه معتبر وارد کنید.";
+        document.getElementById("response").innerHTML = 
+          "⚠️ شناسه معتبر وارد کنید.<br><button onclick='goBack()'>🔙 بازگشت</button>";
         return;
       }
 
@@ -104,15 +124,19 @@
       .then(res => res.json())
       .then(json => {
         if (json.ok) {
-          document.getElementById("response").innerText = `✅ محصول با شناسه ${productId} با موفقیت حذف شد.`;
+          document.getElementById("response").innerHTML =
+            `✅ محصول با شناسه ${productId} با موفقیت حذف شد.<br><button onclick='goBack()'>🔙 بازگشت</button>`;
         } else if (json.detail) {
-          document.getElementById("response").innerText = `❌ خطا: ${json.detail}`;
+          document.getElementById("response").innerHTML =
+            `❌ خطا: ${json.detail}<br><button onclick='goBack()'>🔙 بازگشت</button>`;
         } else {
-          document.getElementById("response").innerText = JSON.stringify(json);
+          document.getElementById("response").innerHTML =
+            JSON.stringify(json) + "<br><button onclick='goBack()'>🔙 بازگشت</button>";
         }
       })
       .catch(err => {
-        document.getElementById("response").innerText = "⚠️ خطا در ارسال: " + err;
+        document.getElementById("response").innerHTML =
+          "⚠️ خطا در ارسال: " + err + "<br><button onclick='goBack()'>🔙 بازگشت</button>";
       });
     }
   </script>
