@@ -56,18 +56,33 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>افزودن محصول جدید</h2>
-    <input type="text" id="sku" placeholder="کد محصول (SKU)">
-    <input type="text" id="name" placeholder="نام محصول">
-    <input type="number" id="price" placeholder="قیمت">
-    <input type="number" id="quantity" placeholder="تعداد موجودی">
-    <input type="number" id="min_threshold" placeholder="حداقل موجودی قابل قبول">
-    <input type="text" id="category" placeholder="دسته‌بندی محصول (مثلاً دیجیتال)">
-    <input type="text" id="image_url" placeholder="لینک تصویر محصول (اختیاری)">
-    <button onclick="addProduct()">ثبت محصول</button>
-    <div id="response"></div>
-  </div>
+<div class="container">
+  <h2>افزودن محصول جدید</h2>
+
+  <label for="sku">کد محصول (SKU):</label>
+  <input type="text" id="sku">
+
+  <label for="name">نام محصول:</label>
+  <input type="text" id="name">
+
+  <label for="price">قیمت:</label>
+  <input type="number" id="price">
+
+  <label for="quantity">تعداد موجودی:</label>
+  <input type="number" id="quantity">
+
+  <label for="min_threshold">حداقل موجودی قابل قبول:</label>
+  <input type="number" id="min_threshold">
+
+  <label for="category">دسته‌بندی محصول:</label>
+  <input type="text" id="category">
+
+  <label for="image_url">لینک تصویر محصول (اختیاری):</label>
+  <input type="text" id="image_url">
+
+  <button onclick="addProduct()">ثبت محصول</button>
+  <div id="response"></div>
+</div>
 
   <script>
     function addProduct() {

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>حذف محصول</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(to left, #fdf6ef, #e6f4ee);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+      margin: 0;
+    }
+
+    .dashboard {
+      background-color: #ffffff;
+      padding: 35px 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(125, 174, 160, 0.3);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h2 {
+      color: #2e6651;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #b9cfc7;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      border-color: #5f927e;
+      outline: none;
+    }
+
+    button {
+      background-color: #b85c5c;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #a74949;
+      transform: translateY(-1px);
+    }
+
+    #response {
+      margin-top: 15px;
+      color: #2e6651;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <h2>🗑️ حذف محصول</h2>
+
+    <label for="product_id">شناسه محصول:</label>
+    <input type="number" id="product_id" placeholder="مثلاً 123">
+
+    <label for="sku">کد SKU (اختیاری):</label>
+    <input type="text" id="sku" placeholder="مثلاً SKU001">
+
+    <label for="name">نام محصول (اختیاری):</label>
+    <input type="text" id="name" placeholder="مثلاً لپ‌تاپ">
+
+    <button onclick="deleteProduct()">حذف کن</button>
+    <div id="response"></div>
+  </div>
+
+
+
+  <script>
+    function deleteProduct() {
+      const token = localStorage.getItem("token");
+      const productId = document.getElementById("product_id").value;
+
+      if (!token) {
+        document.getElementById("response").innerText = "❌ ابتدا وارد شوید.";
+        return;
+      }
+      if (!productId || isNaN(productId)) {
+        document.getElementById("response").innerText = "⚠️ شناسه معتبر وارد کنید.";
+        return;
+      }
+
+      fetch(`http://localhost:8000/products/delete/${productId}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": "Bearer " + token
+        }
+      })
+      .then(res => res.json())
+      .then(json => {
+        if (json.ok) {
+          document.getElementById("response").innerText = `✅ محصول با شناسه ${productId} با موفقیت حذف شد.`;
+        } else if (json.detail) {
+          document.getElementById("response").innerText = `❌ خطا: ${json.detail}`;
+        } else {
+          document.getElementById("response").innerText = JSON.stringify(json);
+        }
+      })
+      .catch(err => {
+        document.getElementById("response").innerText = "⚠️ خطا در ارسال: " + err;
+      });
+    }
+  </script>
+</body>
+</html>
