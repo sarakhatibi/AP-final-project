@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>ویرایش سفارش</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(to left, #fdf6ef, #e6f4ee);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+      margin: 0;
+    }
+
+    .dashboard {
+      background-color: #ffffff;
+      padding: 35px 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(125, 174, 160, 0.3);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h2 {
+      color: #2e6651;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #b9cfc7;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    input:focus, select:focus {
+      border-color: #5f927e;
+      outline: none;
+    }
+
+    button {
+      background-color: #5f927e;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background-color: #4d7c6a;
+      transform: translateY(-1px);
+    }
+
+    #response {
+      margin-top: 15px;
+      color: #2e6651;
+      font-size: 14px;
+    }
+
+    #response button {
+      background-color: #e6a57e;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    #response button:hover {
+      background-color: #d8926c;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <h2>✏️ ویرایش سفارش</h2>
+    <input type="number" id="order_id" placeholder="شناسه سفارش">
+    <input type="text" id="name" placeholder="نام جدید (اختیاری)">
+    <input type="number" id="price" placeholder="قیمت جدید (اختیاری)">
+    <input type="number" id="quantity" placeholder="تعداد جدید (اختیاری)">
+    <input type="number" id="provider_id" placeholder="شناسه تامین‌کننده (اختیاری)">
+    <select id="status">
+      <option value="">-- وضعیت جدید (اختیاری) --</option>
+      <option value="draft">Draft</option>
+      <option value="sent">Sent</option>
+      <option value="recived">Recived</option>
+      <option value="closed">Closed</option>
+    </select>
+    <input type="text" id="category" placeholder="دسته‌بندی (اختیاری)">
+    <button onclick="updateOrder()">اعمال تغییرات</button>
+    <div id="response"></div>
+  </div>
+
+  <script>
+    function updateOrder() {
+      const token = localStorage.getItem("token");
+      const id = document.getElementById("order_id").value;
+
+      const body = {};
+      const fields = ["name", "price", "quantity", "provider_id", "status", "category"];
+      fields.forEach(f => {
+        const val = document.getElementById(f).value;
+        if (val !== "") body[f] = isNaN(val) ? val : Number(val);
+      });
+
+      fetch(`http://localhost:8000/orders/update/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(body)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("سفارشی یافت نشد یا خطا در بروزرسانی");
+        return res.json();
+      })
+      .then(order => {
+        document.getElementById("response").innerHTML = `
+          <div>✅ سفارش با موفقیت بروزرسانی شد</div>
+          <div>نام جدید: ${order.name}</div>
+          <div>شناسه سفارش: ${order.id}</div>
+          <button onclick="history.back()">🔙 برگشت</button>
+        `;
+      })
+      .catch(err => {
+        document.getElementById("response").innerHTML =
+          `<div>⚠️ ${err.message}</div>`;
+      });
+    }
+  </script>
+</body>
+</html>
