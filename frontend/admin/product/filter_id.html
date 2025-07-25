@@ -1,0 +1,119 @@
+
+
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>افزودن محصول</title>
+ <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(to left, #fdf6ef, #e6f4ee);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+      margin: 0;
+    }
+
+    .dashboard {
+      background-color: #ffffff;
+      padding: 35px 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(125, 174, 160, 0.3);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2e6651;
+      font-size: 26px;
+      margin-bottom: 25px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background-color: #89b9a6;
+      color: #fff;
+      padding: 14px;
+      margin: 10px 0;
+      border-radius: 10px;
+      font-size: 16px;
+      
+      cursor: pointer;
+      text-align: center;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    li:hover {
+      background-color: #74ab94;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>جست‌وجو محصول با شناسه</h2>
+
+  <label for="product_id">شناسه محصول:</label>
+  <input type="number" id="product_id">
+
+  <button onclick="searchProduct()">جست‌وجو</button>
+  <div id="search_result"></div>
+</div>
+
+<script>
+  function searchProduct() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      document.getElementById("search_result").innerText = "❌ ابتدا وارد شوید.";
+      return;
+    }
+
+    const productId = document.getElementById("product_id").value;
+    if (!productId) {
+      document.getElementById("search_result").innerText = "❌ شناسه محصول را وارد کنید.";
+      return;
+    }
+
+    fetch(`http://localhost:8000/products/filter_id/${productId}`, {
+      method: "GET",
+      headers: {
+        "Authorization": "Bearer " + token
+      }
+    })
+
+
+
+
+    .then(res => res.json())
+   .then(json => {
+     if (json.detail) {
+    document.getElementById("search_result").innerText = "خطا: " + json.detail;
+    return;
+  }
+
+  const result =
+    "نام محصول: " + json.name + "\n" +
+    "کد محصول (SKU): " + json.sku + "\n" +
+    "قیمت: " + json.price + "\n" +
+    "تعداد موجودی: " + json.quantity + "\n" +
+    "حداقل موجودی قابل قبول: " + json.min_threshold + "\n" +
+    "دسته‌بندی: " + (json.category || "-") + "\n" +
+    "لینک تصویر: " + (json.image || "-");
+
+  document.getElementById("search_result").innerText = result;
+})
+
+
+    .catch(err => {
+      document.getElementById("search_result").innerText = "⚠️ خطا در دریافت اطلاعات: " + err;
+    });
+  }
+</script>
