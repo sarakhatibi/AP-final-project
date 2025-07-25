@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>نمایش همه کالاها به ترتیب نام</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(to left, #fdf6ef, #e6f4ee);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+      margin: 0;
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 35px 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(125, 174, 160, 0.3);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2e6651;
+      font-size: 26px;
+      margin-bottom: 25px;
+    }
+
+    button {
+      background-color: #89b9a6;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      margin-top: 15px;
+      width: 100%;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #74ab94;
+      transform: translateY(-2px);
+    }
+
+    #sku_result {
+      white-space: pre-wrap;
+      margin-top: 20px;
+      background-color: #f2f2f2;
+      padding: 15px;
+      border-radius: 10px;
+      color: #333;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    #sku_result button {
+      background-color: #e6a57e;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    #sku_result button:hover {
+      background-color: #d8926c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>لیست کالاها به ترتیب نام</h2>
+    <button onclick="loadByName()">📋 نمایش کالاها</button>
+    <div id="sku_result"></div>
+  </div>
+
+  <script>
+    function loadByName() {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        document.getElementById("sku_result").innerHTML = "❌ ابتدا وارد شوید.<br><button onclick='history.back()'>🔙 بازگشت</button>";
+        return;
+      }
+
+      const page = 1;
+      const limit = 10;
+
+      fetch(`http://localhost:8000/products/showallbyname?page=${page}&limit=${limit}`, {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + token
+        }
+      })
+      .then(res => res.json())
+      .then(json => {
+        if (json.detail) {
+          document.getElementById("sku_result").innerHTML = `❌ خطا: ${json.detail}<br><button onclick='history.back()'>🔙 بازگشت</button>`;
+          return;
+        }
+
+        if (json.length === 0) {
+          document.getElementById("sku_result").innerHTML = "🚫 محصولی یافت نشد.<br><button onclick='history.back()'>🔙 بازگشت</button>";
+          return;
+        }
+
+        let result = "✅ لیست کالاها:\n";
+        json.forEach(p => {
+          result +=
+            "نام محصول: " + p.name + "\n" +
+            "کد SKU: " + p.sku + "\n" +
+            "قیمت: " + p.price + "\n" +
+            "موجودی: " + p.quantity + "\n" +
+            "حداقل موجودی: " + p.min_threshold + "\n" +
+            "دسته‌بندی: " + (p.category || "-") + "\n" +
+            "لینک تصویر: " + (p.image || "-") + "\n" +
+            "------------------------\n";
+        });
+
+        result += "<button onclick='history.back()'>🔙 بازگشت</button>";
+        document.getElementById("sku_result").innerHTML = result;
+      })
+      .catch(err => {
+        document.getElementById("sku_result").innerHTML =
+          "⚠️ خطا در دریافت اطلاعات: " + err + "<br><button onclick='history.back()'>🔙 بازگشت</button>";
+      });
+    }
+  </script>
+</body>
+</html>
