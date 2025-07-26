@@ -15,7 +15,7 @@
       margin: 0;
     }
 
-    .dashboard {
+    .container {
       background-color: #ffffff;
       padding: 35px 30px;
       border-radius: 15px;
@@ -31,7 +31,7 @@
       margin-bottom: 20px;
     }
 
-    input, select {
+    input {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
@@ -41,7 +41,7 @@
       transition: border-color 0.3s;
     }
 
-    input:focus, select:focus {
+    input:focus {
       border-color: #5f927e;
       outline: none;
     }
@@ -69,22 +69,6 @@
       color: #2e6651;
       font-size: 14px;
     }
-
-    #response button {
-      background-color: #e6a57e;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      margin-top: 15px;
-      font-size: 15px;
-      cursor: pointer;
-    }
-
-    #response button:hover {
-      background-color: #d8926c;
-    }
-
   </style>
 </head>
 <body>
@@ -108,27 +92,35 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       })
-      .then(res => res.json())
-       .then(json => {
-  if (json.access_token) {
-    localStorage.setItem("token", json.access_token);
-    localStorage.setItem("role", json.role); // ذخیره نقش کاربر
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("پاسخ نامعتبر از سرور");
+        }
+        return res.json();
+      })
+      .then(json => {
+        if (json.access_token && json.role) {
+          localStorage.setItem("token", json.access_token);
+          localStorage.setItem("role", json.role);
 
-    document.getElementById("response").innerText = "✅ ورود موفق! توکن ذخیره شد.";
+          document.getElementById("response").innerText = "✅ ورود موفق! خوش اومدی 🎉";
 
-    setTimeout(() => {
-      if (json.role === "admin") {
-        window.location.href = "home_admin.html";
-      } else {
-        window.location.href = "home_user.html";
-      }
-    }, 1200);
-  } else {
-    document.getElementById("response").innerText = json.detail || "❌ ورود ناموفق.";
-    document.getElementById("signupHint").style.display = "block";
-  }
-})
-      
+          setTimeout(() => {
+            const role = json.role.toLowerCase();
+            if (role === "admin") {
+              window.location.href = "home_admin.html";
+            } else {
+              window.location.href = "home_user.html";
+            }
+          }, 1200);
+        } else {
+          document.getElementById("response").innerText = json.detail || "❌ ورود ناموفق.";
+        }
+      })
+      .catch(error => {
+        console.error("Login error:", error);
+        document.getElementById("response").innerText = "⚠️ خطا در ارتباط با سرور.";
+      });
     }
   </script>
 </body>
