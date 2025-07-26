@@ -2,7 +2,7 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
-  <title>افزودن سفارش</title>
+  <title>➕ ثبت سفارش</title>
   <style>
     body {
       font-family: "Segoe UI", Tahoma, sans-serif;
@@ -16,8 +16,8 @@
     }
 
     .dashboard {
-      background-color: #ffffff;
-      padding: 35px 30px;
+      background-color: #fff;
+      padding: 30px;
       border-radius: 15px;
       box-shadow: 0 6px 20px rgba(125, 174, 160, 0.3);
       max-width: 500px;
@@ -26,20 +26,19 @@
     }
 
     h2 {
-      color: #2e6651;
-      font-size: 24px;
+       color: #2e6651;
       margin-bottom: 20px;
+      font-size: 24px;
     }
 
-    input, select {
+    input, select, button {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #b9cfc7;
-      border-radius: 8px;
+      padding: 12px;
+      margin: 8px 0;
       font-size: 15px;
-      transition: border-color 0.3s;
-    }
+      border-radius: 8px;
+      border: 1px solid #b9cfc7;
+     }
 
     input:focus, select:focus {
       border-color: #5f927e;
@@ -49,14 +48,9 @@
     button {
       background-color: #5f927e;
       color: white;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 10px;
-      transition: background-color 0.3s, transform 0.2s;
+       border: none;
+       cursor: pointer;
+       transition: background-color 0.3s, transform 0.2s;
     }
 
     button:hover {
@@ -65,20 +59,19 @@
     }
 
     #response {
-      margin-top: 15px;
-      color: #2e6651;
+      margin-top: 20px;
       font-size: 14px;
+      color: #2e6651;
     }
 
     #response button {
+      margin-top: 15px;
       background-color: #e6a57e;
       color: white;
       padding: 10px;
       border: none;
       border-radius: 8px;
-      margin-top: 15px;
-      font-size: 15px;
-      cursor: pointer;
+       cursor: pointer;
     }
 
     #response button:hover {
@@ -88,7 +81,7 @@
 </head>
 <body>
   <div class="dashboard">
-    <h2>➕ افزودن سفارش</h2>
+    <h2>ثبت سفارش</h2>
     <input type="text" id="name" placeholder="نام کالا">
     <input type="number" id="price" placeholder="قیمت">
     <input type="number" id="quantity" placeholder="تعداد">
@@ -107,14 +100,22 @@
   <script>
     function submitOrder() {
       const token = localStorage.getItem("token");
-      const order = {
-        name: document.getElementById("name").value,
-        price: parseFloat(document.getElementById("price").value),
-        quantity: parseInt(document.getElementById("quantity").value),
-        provider_id: parseInt(document.getElementById("provider_id").value),
-        status: document.getElementById("status").value,
-        category: document.getElementById("category").value || null
-      };
+      const responseBox = document.getElementById("response");
+
+      if (!token) {
+        responseBox.textContent = "❌ لطفاً ابتدا وارد حساب کاربری شوید.";
+        return;
+      }
+
+     const order = {
+  name: document.getElementById("name").value,
+  price: parseFloat(document.getElementById("price").value),
+  quantity: parseInt(document.getElementById("quantity").value),
+  provider_id: parseInt(document.getElementById("provider_id").value),
+  status: document.getElementById("status").value,
+  category: document.getElementById("category").value || null,
+  order_date: new Date().toISOString()   
+};
 
       fetch("http://localhost:8000/orders/add", {
         method: "POST",
@@ -126,17 +127,27 @@
       })
       .then(res => res.json())
       .then(data => {
-        const responseBox = document.getElementById("response");
-        responseBox.innerHTML = `
-          <div>✅ سفارش با موفقیت ثبت شد</div>
-          <div>کالا: ${data.order.name}</div>
-          <div>شناسه: ${data.order.id}</div>
-          <button onclick="history.back()">🔙 برگشت</button>
-        `;
+        if (data.order) {
+          responseBox.innerHTML = `
+            ✅ سفارش با موفقیت ثبت شد<br>
+            کالا: ${data.order.name}<br>
+            شناسه: ${data.order.id}<br>
+            <button onclick="history.back()">🔙 بازگشت</button>
+          `;
+        } else {
+          responseBox.innerHTML = `
+            ❌ خطا در پاسخ دریافتی<br>
+            جزئیات: ${data.detail || "پاسخ نامعتبر از سرور"}<br>
+            <button onclick="history.back()">🔙 بازگشت</button>
+          `;
+        }
       })
       .catch(err => {
-        document.getElementById("response").innerHTML =
-          `<div>⚠️ خطا در ثبت سفارش: ${err}</div>`;
+        responseBox.innerHTML = `
+          ⚠️ خطا در ارسال درخواست<br>
+          ${err}<br>
+          <button onclick="history.back()">🔙 بازگشت</button>
+        `;
       });
     }
   </script>

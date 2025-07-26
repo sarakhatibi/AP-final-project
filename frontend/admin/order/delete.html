@@ -98,6 +98,10 @@
     function deleteOrder() {
       const token = localStorage.getItem("token");
       const id = document.getElementById("order_id").value;
+      if (!id || isNaN(id)) {
+  document.getElementById("response").innerHTML = "⚠️ لطفاً شناسه معتبر وارد کنید.";
+  return;
+}
 
       fetch(`http://localhost:8000/orders/delete/${id}`, {
         method: "DELETE",

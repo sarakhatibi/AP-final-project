@@ -116,7 +116,11 @@
         const val = document.getElementById(f).value;
         if (val !== "") body[f] = isNaN(val) ? val : Number(val);
       });
-
+if (!id || isNaN(id)) {
+  document.getElementById("response").innerHTML =
+    "<div>⚠️ لطفاً آیدی سفارش معتبر وارد کنید.</div>";
+  return;
+}
       fetch(`http://localhost:8000/orders/update/${id}`, {
         method: "PUT",
         headers: {

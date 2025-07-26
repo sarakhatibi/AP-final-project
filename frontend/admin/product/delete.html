@@ -2,7 +2,7 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
-  <title>حذف محصول</title>
+  <title>🗑️ حذف محصول</title>
   <style>
     body {
       font-family: "Segoe UI", Tahoma, sans-serif;
@@ -13,10 +13,9 @@
       height: 100vh;
       direction: rtl;
       margin: 0;
-    }
-
+     }
     .dashboard {
-      background-color: #ffffff;
+      background-color: #fff;
       padding: 35px 30px;
       border-radius: 15px;
       box-shadow: 0 6px 20px rgba(125, 174, 160, 0.3);
@@ -24,119 +23,71 @@
       width: 100%;
       text-align: center;
     }
-
-    h2 {
-      color: #2e6651;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-
-    input {
+    input, button {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #b9cfc7;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 16px;
       border-radius: 8px;
-      font-size: 15px;
-      transition: border-color 0.3s;
+      border: none;
     }
-
-    input:focus {
-      border-color: #5f927e;
-      outline: none;
-    }
-
+    input {
+      border: 1px solid #b9cfc7;
+ }
     button {
       background-color: #b85c5c;
       color: white;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s, transform 0.2s;
-      width: 100%;
-    }
-
+       cursor: pointer;
+     }
     button:hover {
       background-color: #a74949;
-      transform: translateY(-1px);
-    }
-
+     }
     #response {
-      margin-top: 15px;
-      color: #2e6651;
-      font-size: 14px;
-    }
-
-    #response button {
-      background-color: #e6a57e;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      margin-top: 15px;
+      margin-top: 20px;
       font-size: 15px;
-      cursor: pointer;
-    }
-
-    #response button:hover {
-      background-color: #d8926c;
+      color: #2e6651;
     }
   </style>
 </head>
 <body>
   <div class="dashboard">
     <h2>🗑️ حذف محصول</h2>
-    <label for="product_id">شناسه محصول:</label>
-    <input type="number" id="product_id" placeholder="مثلاً 123">
-    <button onclick="deleteProduct()">حذف کن</button>
+    <input type="number" id="product_id" placeholder="شناسه محصول را وارد کنید">
+    <button onclick="deleteProduct()">حذف محصول</button>
     <div id="response"></div>
- </div>
+  </div>
 
-  <script>
-    function goBack() {
-      history.back();
-    }
-
+   <script>
     function deleteProduct() {
       const token = localStorage.getItem("token");
       const productId = document.getElementById("product_id").value;
 
       if (!token) {
-        document.getElementById("response").innerHTML = 
-          "❌ ابتدا وارد شوید.<br><button onclick='goBack()'>🔙 بازگشت</button>";
+        document.getElementById("response").textContent = "❌ لطفاً وارد حساب شوید.";
         return;
       }
 
       if (!productId || isNaN(productId)) {
-        document.getElementById("response").innerHTML = 
-          "⚠️ شناسه معتبر وارد کنید.<br><button onclick='goBack()'>🔙 بازگشت</button>";
+        document.getElementById("response").textContent = "⚠️ شناسه محصول معتبر نیست.";
         return;
       }
 
       fetch(`http://localhost:8000/products/delete/${productId}`, {
         method: "DELETE",
         headers: {
-          "Authorization": "Bearer " + token
+          "Authorization": `Bearer ${token}`
         }
       })
       .then(res => res.json())
       .then(json => {
         if (json.ok) {
-          document.getElementById("response").innerHTML =
-            `✅ محصول با شناسه ${productId} با موفقیت حذف شد.<br><button onclick='goBack()'>🔙 بازگشت</button>`;
-        } else if (json.detail) {
-          document.getElementById("response").innerHTML =
-            `❌ خطا: ${json.detail}<br><button onclick='goBack()'>🔙 بازگشت</button>`;
+          document.getElementById("response").textContent = `✅ محصول ${productId} حذف شد.`;
         } else {
-          document.getElementById("response").innerHTML =
-            JSON.stringify(json) + "<br><button onclick='goBack()'>🔙 بازگشت</button>";
+          document.getElementById("response").textContent = `❌ خطا: ${json.detail || "مشکلی رخ داده."}`;
         }
       })
-      .catch(err => {
-        document.getElementById("response").innerHTML =
-          "⚠️ خطا در ارسال: " + err + "<br><button onclick='goBack()'>🔙 بازگشت</button>";
+      .catch(error => {
+        document.getElementById("response").textContent = `⚠️ خطا در ارتباط: ${error}`;
       });
     }
   </script>

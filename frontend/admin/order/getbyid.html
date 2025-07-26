@@ -99,6 +99,11 @@
     function getOrder() {
       const token = localStorage.getItem("token");
       const orderId = document.getElementById("order_id").value;
+      if (!orderId || isNaN(orderId)) {
+  document.getElementById("response").innerHTML =
+    "<div class='field'>⚠️ لطفاً آیدی معتبر وارد کنید.</div>";
+  return;
+}
 
       fetch(`http://localhost:8000/orders/getbyid/${orderId}`, {
         headers: {
