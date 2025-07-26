@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>✨ پرفروش‌ترین کالاها</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma;
+      background: linear-gradient(to right, #fdf6ef, #e6f4ee);
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(125,174,160,0.2);
+      margin-top: 80px;
+      width: 100%;
+      max-width: 600px;
+      box-sizing: border-box;
+    }
+
+    h2 {
+      text-align: center;
+      color: #3a6c60;
+      font-size: 26px;
+      margin-bottom: 24px;
+    }
+
+    .product-box {
+      background: #eefaf4;
+      border: 1px solid #c1e3d5;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .product-box p {
+      margin: 6px 0;
+      font-size: 15px;
+      color: #405f50;
+    }
+
+    .highlight {
+      color: #2d8b70;
+      font-weight: bold;
+    }
+
+    .loader {
+      text-align: center;
+      color: #89b9a6;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>✨ پرفروش‌ترین کالاها</h2>
+    <div id="top-products"></div>
+    <div class="loader" id="loading">در حال بارگذاری داده‌ها...</div>
+  </div>
+
+  <script>
+    async function fetchTopProducts() {
+      try {
+        const response = await fetch("http://localhost:8000//report/top-products");
+        const data = await response.json();
+
+        const container = document.getElementById("top-products");
+        const loading = document.getElementById("loading");
+        loading.style.display = "none";
+
+        if (data.length === 0) {
+          container.innerHTML = "<p>🧘‍♀️ هنوز کالایی پرفروش نشده است.</p>";
+          return;
+        }
+
+        data.forEach(item => {
+          const el = document.createElement("div");
+          el.className = "product-box";
+          el.innerHTML = `
+            <p><strong>نام کالا:</strong> ${item.name}</p>
+            <p><strong>کد SKU:</strong> ${item.sku}</p>
+            <p><strong>تعداد فروش:</strong> <span class="highlight">${item.sales_count}</span></p>
+          `;
+          container.appendChild(el);
+        });
+      } catch (error) {
+        document.getElementById("loading").innerText = "❌ خطا در دریافت اطلاعات";
+      }
+    }
+
+    fetchTopProducts();
+  </script>
+</body>
+</html>

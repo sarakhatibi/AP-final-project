@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>📦 هشدار موجودی انبار</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma;
+      background: linear-gradient(to left, #fdf6ef, #e6f4ee);
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(125,174,160,0.2);
+      margin-top: 80px;
+      width: 100%;
+      max-width: 640px;
+      box-sizing: border-box;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2f5d55;
+      font-size: 26px;
+      margin-bottom: 26px;
+    }
+
+    .alert-box {
+      background: #fff7f7;
+      border: 1px solid #f3c4c4;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .alert-box p {
+      margin: 6px 0;
+      font-size: 15px;
+      color: #405f50;
+    }
+
+    .critical {
+      color: #d33;
+      font-weight: bold;
+    }
+
+    .warning {
+      color: #e68a00;
+      font-weight: bold;
+    }
+
+    .loader {
+      text-align: center;
+      color: #89b9a6;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📦 هشدار موجودی انبار</h2>
+    <div id="alerts"></div>
+    <div class="loader" id="loading">در حال بررسی موجودی...</div>
+  </div>
+
+  <script>
+    async function fetchAlerts() {
+      try {
+        const res = await fetch("http://localhost:8000/products//low_stock");
+        const data = await res.json();
+
+        const container = document.getElementById("alerts");
+        const loading = document.getElementById("loading");
+        loading.style.display = "none";
+
+        if (data.length === 0) {
+          container.innerHTML = "<p>✅ همه کالاها موجودند؛ جای نگرانی نیست.</p>";
+          return;
+        }
+
+        data.forEach(item => {
+          const el = document.createElement("div");
+          el.className = "alert-box";
+          const alertClass = item.alert.includes("❌") ? "critical" : "warning";
+
+          el.innerHTML = `
+            <p><strong>نام کالا:</strong> ${item.name}</p>
+            <p><strong>کد SKU:</strong> ${item.sku}</p>
+            <p class="${alertClass}">${item.alert}</p>
+          `;
+
+          container.appendChild(el);
+        });
+      } catch (error) {
+        document.getElementById("loading").innerText = "❌ خطا در دریافت هشدارها";
+      }
+    }
+
+    fetchAlerts();
+  </script>
+</body>
+</html>

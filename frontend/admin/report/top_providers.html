@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>📈 امتیاز تأمین‌کننده</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma;
+      background: linear-gradient(to left, #fdf6ef, #e6f4ee);
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(125,174,160,0.18);
+      margin-top: 80px;
+      max-width: 600px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2f5d55;
+      font-size: 24px;
+      margin-bottom: 24px;
+    }
+
+    .score-box {
+      background: #ecfdf6;
+      border: 1px solid #c1e3d5;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+
+    .score-box p {
+      margin: 8px 0;
+      font-size: 15px;
+      color: #405f50;
+    }
+
+    .highlight {
+      font-weight: bold;
+      color: #2d8b70;
+    }
+
+    .loader {
+      text-align: center;
+      color: #89b9a6;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📈 گزارش امتیاز تأمین‌کننده</h2>
+    <div id="score-data"></div>
+    <div class="loader" id="loading">در حال بارگذاری داده‌ها...</div>
+  </div>
+
+  <script>
+    const providerId = 1; // مقدار را از URL یا ورودی کاربر بگیر
+
+    async function fetchProviderScore() {
+      try {
+        const res = await fetch(`http://localhost:8000/report/provider-score/${providerId}`);
+        const data = await res.json();
+
+        const container = document.getElementById("score-data");
+        const loading = document.getElementById("loading");
+        loading.style.display = "none";
+
+        const el = document.createElement("div");
+        el.className = "score-box";
+        el.innerHTML = `
+          <p><strong>نام تأمین‌کننده:</strong> ${data.name}</p>
+          <p><strong>امتیاز کل:</strong> <span class="highlight">${data.total_score}</span></p>
+          <p><strong>زمان متوسط تحویل:</strong> ${data.avg_delivery_time} روز</p>
+          <p><strong>رضایت مشتریان:</strong> ${data.customer_rating} از 5</p>
+          <p><strong>تعداد کالاهای موفق:</strong> ${data.successful_products}</p>
+        `;
+
+        container.appendChild(el);
+      } catch (error) {
+        document.getElementById("loading").innerText = "❌ خطا در دریافت اطلاعات تأمین‌کننده";
+      }
+    }
+
+    fetchProviderScore();
+  </script>
+</body>
+</html>
