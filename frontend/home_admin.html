@@ -15,7 +15,7 @@
       margin: 0;
     }
 
-    .dashboard {
+    .container {
       background-color: #ffffff;
       padding: 35px 30px;
       border-radius: 15px;
@@ -24,46 +24,41 @@
       width: 100%;
     }
 
-    h1 {
+    h2 {
       text-align: center;
       color: #2e6651;
       font-size: 26px;
       margin-bottom: 25px;
     }
 
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    li {
-      background-color: #89b9a6;
-      color: #fff;
-      padding: 14px;
-      margin: 10px 0;
-      border-radius: 10px;
+    button {
+      background-color: #2563eb;
+      color: white;
+      padding: 12px;
+      width: 100%;
+      border: none;
+      border-radius: 5px;
       font-size: 16px;
+      margin: 12px 0;
       cursor: pointer;
-      text-align: center;
-      transition: background-color 0.3s, transform 0.2s;
+      transition: background-color 0.3s;
     }
 
-    li:hover {
-      background-color: #74ab94;
-      transform: translateY(-2px);
+    button:hover {
+      background-color: #1d4ed8;
     }
   </style>
 </head>
 <body>
-  <div class="dashboard">
-    <h2>🌿 به قسمت ادمین خوش آمدید</h2>
-    <ul>
-      <li onclick="goTo('admin/product/mahsoolat.html')">🛍️ محصولات</li>
-      <li onclick="goTo('admin/providers/home_provider.html')">🏢 تأمین‌کنندگان</li>
-      <li onclick="goTo('users.html')">👥 مدیریت کاربران</li>
-      <li onclick="goTo('admin/report/home_report.html')">📊 گزارش‌ها</li>
-      <li onclick="goTo('admin/order/order_home.html')">📝 سفارش خرید</li>
-    </ul>
+  <div class="container">
+    <h2>👋 خوش آمدی کاربر گرامی!</h2>
+    <button onclick="goTo('profile.html')">🙍‍♀️ ویرایش اطلاعات</button>
+    <button onclick="goTo('product/view_products.html')">📦 مشاهده محصولات</button>
+    <button onclick="goTo('wallet/charge_wallet.html')">💰 شارژ کیف پول</button>
+    <button onclick="goTo('orders/add_order.html')">📝 ثبت سفارش</button>
+    <button onclick="goTo('orders/delete_order.html')">❌ حذف سفارش</button>
+    <button onclick="goTo('orders/track_order.html')">🔍 پیگیری سفارش</button>
+    <button onclick="logout()">🔓 خروج از حساب</button>
   </div>
 
   <script>
