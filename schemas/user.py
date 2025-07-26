@@ -23,7 +23,7 @@ class UserRead(SQLModel):
     username: str=Field(unique=True)
     role: str
 
-class UserUpdate(SQLModel):
+class UserUpdate(BaseModel):
     full_name: Optional[str] = Field(default=None)
     username: Optional[str] = Field(default=None, unique=True)
     email: Optional[EmailStr] = Field(default=None, unique=True)

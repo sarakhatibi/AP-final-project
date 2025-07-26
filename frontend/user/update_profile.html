@@ -69,14 +69,30 @@
 
     #response {
       margin-top: 18px;
-      background: #f3fdf9;
       padding: 10px;
       border-radius: 6px;
       font-size: 14px;
-      color: #1e293b;
       min-height: 40px;
       word-break: break-word;
       text-align: center;
+    }
+
+    .success {
+      background-color: #e6f7f1;
+      color: #2f5d55;
+      border: 1px solid #89b9a6;
+    }
+
+    .error {
+      background-color: #fdecea;
+      color: #8f3f3f;
+      border: 1px solid #dd9999;
+    }
+
+    .loading {
+      background-color: #fff8e6;
+      color: #996a00;
+      border: 1px solid #e6c95b;
     }
   </style>
 </head>
@@ -88,25 +104,28 @@
       <input type="text" id="username" placeholder="نام کاربری" required />
       <input type="email" id="email" placeholder="ایمیل" required />
       <input type="password" id="password" placeholder="رمز عبور جدید (اختیاری)" />
-      <button type="submit">ثبت تغییرات</button>
+      <button type="submit" id="submitBtn">ثبت تغییرات</button>
     </form>
-
     <div id="response"></div>
   </div>
 
   <script>
-    
     const token = localStorage.getItem("token") || localStorage.getItem("access_token");
-    const userId = localStorage.getItem("userId"); 
+    const userId = localStorage.getItem("userId");
 
     const responseDiv = document.getElementById("response");
     const form = document.getElementById("editProfileForm");
+    const submitBtn = document.getElementById("submitBtn");
+
+    const setResponse = (msg, type) => {
+      responseDiv.textContent = msg;
+      responseDiv.className = type;
+    };
 
     if (!token || !userId) {
-      responseDiv.textContent = "❌ شما وارد نشده‌اید. لطفاً ابتدا وارد شوید.";
+      setResponse("❌ شما وارد نشده‌اید. لطفاً ابتدا وارد شوید.", "error");
       form.style.display = "none";
     } else {
-    
       fetch(`http://localhost:8000/users/${userId}`, {
         headers: { "Authorization": `Bearer ${token}` },
       })
@@ -120,8 +139,7 @@
         document.getElementById("email").value = data.email || "";
       })
       .catch(err => {
-      
-        responseDiv.textContent = "⚠️ " + err.message;
+        setResponse("⚠️ " + err.message, "error");
       });
     }
 
@@ -134,33 +152,37 @@
       const password = document.getElementById("password").value;
 
       const payload = { full_name, username, email };
-      if (password && password.trim() !== "") {
-        payload.password = password;
-      }
+      if (password && password.trim() !== "") payload.password = password;
 
-      responseDiv.textContent = "در حال ارسال...";
+      setResponse("⏳ در حال ارسال...", "loading");
+      submitBtn.disabled = true;
 
       try {
-        const res = await fetch(`http://localhost:8000/users/edit/${userId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify(payload)
-        });
+  const res = await fetch(`http://localhost:8000/users/edit/${userId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify(payload)
+  });
 
-        const data = await res.json();
+  const result = await res.json();
 
-        if (!res.ok) throw new Error(data.detail || data.message || "خطا در ارسال درخواست");
+  if (!res.ok) {
+    const detail = result.detail || result.message || JSON.stringify(result);
+    setResponse("❌ خطا: " + detail, "error");
+    return;
+  }
 
-        responseDiv.textContent = "✅ ویرایش با موفقیت انجام شد.";
-        form.reset();
-      } catch (error) {
-        responseDiv.textContent = "❌ خطا: " + error.message;
-      }
+  setResponse("✅ ویرایش با موفقیت انجام شد.", "success");
+  form.reset();
+} catch (error) {
+  setResponse("❌ خطای شبکه یا سرور: " + (error.message || JSON.stringify(error)), "error");
+}
+
+      submitBtn.disabled = false;
     });
   </script>
 </body>
 </html>
-
