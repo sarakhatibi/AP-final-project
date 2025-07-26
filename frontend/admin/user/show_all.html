@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8" />
+  <title>نمایش کاربران</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(to left, #fdf6ef, #e6f4ee);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+      margin: 0;
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 35px 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(125, 174, 160, 0.3);
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h2 {
+      color: #2e6651;
+      font-size: 26px;
+      margin-bottom: 25px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 15px 0;
+      text-align: right;
+    }
+
+    li {
+      margin-bottom: 10px;
+      padding: 8px;
+      background: #e6f4ee;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #89b9a6;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      font-size: 16px;
+      margin: 0 5px;
+    }
+
+    button:hover:not(:disabled) {
+      background-color: #74ab94;
+      transform: translateY(-2px);
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    #message {
+      margin-top: 10px;
+      color: red;
+      min-height: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>نمایش کاربران</h2>
+    <ul id="userList"></ul>
+
+    <button id="prevBtn" disabled>صفحه قبل</button>
+    <button id="nextBtn">صفحه بعد</button>
+
+    <div id="message"></div>
+  </div>
+
+<script>
+  const userList = document.getElementById('userList');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const messageDiv = document.getElementById('message');
+
+  let currentPage = 1;
+  const limit = 10;
+
+  const API_URL = 'http://localhost:8000/users/display_all';
+
+  
+  const token = localStorage.getItem('token') || '';  
+
+  async function fetchUsers(page = 1) {
+    try {
+      messageDiv.textContent = '';
+      const response = await fetch(`${API_URL}?page=${page}&limit=${limit}`, {
+        headers: {
+      
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.status === 403) {
+        messageDiv.textContent = 'دسترسی محدود است، فقط ادمین‌ها می‌توانند این صفحه را ببینند.';
+        userList.innerHTML = '';
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+        return;
+      }
+
+      if (response.status === 404) {
+        messageDiv.textContent = 'کاربر دیگری در این صفحه وجود ندارد.';
+        userList.innerHTML = '';
+        nextBtn.disabled = true;
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error('خطا در دریافت داده‌ها');
+      }
+
+      const users = await response.json();
+
+      if (users.length === 0) {
+        messageDiv.textContent = 'کاربر دیگری در این صفحه وجود ندارد.';
+        userList.innerHTML = '';
+        nextBtn.disabled = true;
+        return;
+      }
+
+      
+      renderUsers(users);
+
+
+      prevBtn.disabled = page === 1;
+      nextBtn.disabled = users.length < limit;
+
+      currentPage = page;
+
+    } catch (err) {
+      messageDiv.textContent = err.message;
+      userList.innerHTML = '';
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+    }
+  }
+
+  function renderUsers(users) {
+    userList.innerHTML = '';
+    for (const user of users) {
+      const li = document.createElement('li');
+      li.textContent = `نام: ${user.full_name} - ایمیل: ${user.email} - نقش: ${user.role}`;
+      userList.appendChild(li);
+    }
+  }
+
+  prevBtn.addEventListener('click', () => {
+    if (currentPage > 1) {
+      fetchUsers(currentPage - 1);
+    }
+  });
+  nextBtn.addEventListener('click', () => {
+    fetchUsers(currentPage + 1);
+  });
+
+ 
+  fetchUsers(currentPage);
+</script>
+
+</body>
+</html>
