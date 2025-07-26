@@ -1,82 +1,90 @@
+<!DOCTYPE html>
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
   <title>ورود به سیستم</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap');
-
     body {
-  font-family: 'Vazirmatn', sans-serif;
-  background: linear-gradient(to right, #fdf5ec, #d5eae2);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  direction: rtl;
-  margin: 0;
-}
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(to left, #fdf6ef, #e6f4ee);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+      margin: 0;
+    }
 
-.container {
-  background-color: #ffffff;
-  padding: 40px 32px;
-  border-radius: 16px;
-  box-shadow: 0 12px 28px rgba(125,174,160,0.18);
-  max-width: 400px;
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-}
+    .dashboard {
+      background-color: #ffffff;
+      padding: 35px 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(125, 174, 160, 0.3);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
 
-h2 {
-  margin-bottom: 20px;
-  color: #2f5d55;
-  font-size: 24px;
-  text-align: center;
-}
+    h2 {
+      color: #2e6651;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
 
-input {
-  margin: 10px 0;
-  padding: 12px;
-  width: 100%;
-  border: 1px solid #c3dbd4;
-  border-radius: 8px;
-  font-size: 15px;
-  background-color: #fcfaf7;
-  transition: border-color 0.3s;
-}
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #b9cfc7;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border-color 0.3s;
+    }
 
-input:focus {
-  border-color: #89b9a6;
-  outline: none;
-  box-shadow: 0 0 4px rgba(137,185,166,0.3);
-}
+    input:focus, select:focus {
+      border-color: #5f927e;
+      outline: none;
+    }
 
-button {
-  background-color: #89b9a6;
-  color: white;
-  padding: 12px;
-  width: 100%;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  margin-top: 14px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
+    button {
+      background-color: #5f927e;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      transition: background-color 0.3s, transform 0.2s;
+    }
 
-button:hover {
-  background-color: #6fa795;
-}
+    button:hover {
+      background-color: #4d7c6a;
+      transform: translateY(-1px);
+    }
 
-#response {
-  margin-top: 18px;
-  background: #f3fdf9;
-  padding: 10px;
-  border-radius: 6px;
-  font-size: 14px;
-  color: #1e293b;
-  text-align: center;
-}
+    #response {
+      margin-top: 15px;
+      color: #2e6651;
+      font-size: 14px;
+    }
+
+    #response button {
+      background-color: #e6a57e;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    #response button:hover {
+      background-color: #d8926c;
+    }
+
   </style>
 </head>
 <body>
@@ -101,23 +109,26 @@ button:hover {
         body: JSON.stringify(data)
       })
       .then(res => res.json())
-      .then(json => {
-        if (json.access_token) {
-          localStorage.setItem("token", json.access_token);
-          localStorage.setItem("role", json.role);
-          document.getElementById("response").innerText = "✅ ورود موفق! خوش اومدی 🎉";
+       .then(json => {
+  if (json.access_token) {
+    localStorage.setItem("token", json.access_token);
+    localStorage.setItem("role", json.role); // ذخیره نقش کاربر
 
-          setTimeout(() => {
-            if (json.role === "admin") {
-              window.location.href = "home_admin.html";
-            } else {
-              window.location.href = "home_user.html";
-            }
-          }, 1200);
-        } else {
-          document.getElementById("response").innerText = json.detail || "❌ ورود ناموفق.";
-        }
-      })
+    document.getElementById("response").innerText = "✅ ورود موفق! توکن ذخیره شد.";
+
+    setTimeout(() => {
+      if (json.role === "admin") {
+        window.location.href = "home_admin.html";
+      } else {
+        window.location.href = "home_user.html";
+      }
+    }, 1200);
+  } else {
+    document.getElementById("response").innerText = json.detail || "❌ ورود ناموفق.";
+    document.getElementById("signupHint").style.display = "block";
+  }
+})
+      
     }
   </script>
 </body>
