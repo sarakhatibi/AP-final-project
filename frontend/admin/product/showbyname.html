@@ -115,6 +115,7 @@
         let result = "✅ لیست کالاها:\n";
         json.forEach(p => {
           result +=
+           "شناسه محصول: " + p.id + "\n" +
             "نام محصول: " + p.name + "\n" +
             "کد SKU: " + p.sku + "\n" +
             "قیمت: " + p.price + "\n" +

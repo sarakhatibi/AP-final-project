@@ -139,6 +139,7 @@
         let result = "✅ محصولات یافت‌شده:\n";
         json.forEach(p => {
           result +=
+           "شناسه محصول: " + p.id + "\n" +
             "نام محصول: " + p.name + "\n" +
             "کد محصول: " + p.sku + "\n" +
             "قیمت: " + p.price + "\n" +

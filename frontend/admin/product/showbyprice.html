@@ -94,7 +94,7 @@
       const page = 1;
       const limit = 10;
 
-      fetch(`http://localhost:8000/productds/showbyprice?page=${page}&limit=${limit}`, {
+      fetch(`http://localhost:8000/products/showbyprice?page=${page}&limit=${limit}`, {
         method: "GET",
         headers: {
           "Authorization": "Bearer " + token
@@ -115,6 +115,7 @@
         let result = "✅ لیست کالاها بر اساس قیمت:\n";
         json.forEach(p => {
           result +=
+           "شناسه محصول: " + p.id + "\n" +
             "نام محصول: " + p.name + "\n" +
             "کد SKU: " + p.sku + "\n" +
             "قیمت: " + p.price + "\n" +
