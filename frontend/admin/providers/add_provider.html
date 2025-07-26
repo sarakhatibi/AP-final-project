@@ -105,10 +105,13 @@ input, select {
 
       try {
         const response = await fetch("http://localhost:8000/providers/add", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        });
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${localStorage.getItem("token")}`,  // 👈 این خط اضافه می‌شه
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(data)
+});
 
         const result = await response.json();
         alert(result.message || "✅ تأمین‌کننده با موفقیت اضافه شد");
