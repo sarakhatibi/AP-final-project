@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
@@ -6,106 +7,114 @@
     @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap');
 
     body {
-  font-family: 'Vazirmatn', sans-serif;
-  background: linear-gradient(to right, #fdf5ec, #d5eae2);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  direction: rtl;
-  margin: 0;
-}
+      font-family: 'Vazirmatn', sans-serif;
+      background: linear-gradient(to right, #fdf5ec, #d5eae2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+      margin: 0;
+    }
 
-.container {
-  background-color: #ffffff;
-  padding: 40px 32px;
-  border-radius: 16px;
-  box-shadow: 0 12px 28px rgba(125,174,160,0.18);
-  max-width: 400px;
+    .container {
+      background-color: #ffffff;
+      padding: 40px 32px;
+      border-radius: 16px;
+      box-shadow: 0 12px 28px rgba(125,174,160,0.18);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #2f5d55;
+      font-size: 24px;
+      text-align: center;
+    }
+
+    input {
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-h2 {
-  margin-bottom: 20px;
-  color: #2f5d55;
-  font-size: 24px;
-  text-align: center;
-}
-
-input {
-  margin: 10px 0;
   padding: 12px;
-  width: 100%;
+  margin: 10px 0;
   border: 1px solid #c3dbd4;
   border-radius: 8px;
   font-size: 15px;
   background-color: #fcfaf7;
-  transition: border-color 0.3s;
+  text-align: right;
+  direction: rtl;
+  box-sizing: border-box; /* 🔥 این خیلی مهمه */
 }
 
-input:focus {
-  border-color: #89b9a6;
-  outline: none;
-  box-shadow: 0 0 4px rgba(137,185,166,0.3);
-}
+    input:focus {
+      border-color: #89b9a6;
+      outline: none;
+      box-shadow: 0 0 4px rgba(137,185,166,0.3);
+    }
 
-button {
-  background-color: #89b9a6;
-  color: white;
-  padding: 12px;
-  width: 100%;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  margin-top: 14px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
+    button {
+      background-color: #89b9a6;
+      color: white;
+      padding: 12px;
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-top: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
 
-button:hover {
-  background-color: #6fa795;
-}
+    button:hover {
+      background-color: #6fa795;
+    }
 
-#response {
-  margin-top: 18px;
-  background: #f3fdf9;
-  padding: 10px;
-  border-radius: 6px;
-  font-size: 14px;
-  color: #1e293b;
-  text-align: center;
+    #response {
+      margin-top: 18px;
+      background: #f3fdf9;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #1e293b;
+      text-align: center;
+    }
+    * {
+  box-sizing: border-box;
 }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>ورود به حساب کاربری</h2>
-    <input type="text" id="login_username" placeholder="نام کاربری">
-    <input type="password" id="login_password" placeholder="رمز عبور">
+    <input type="text" id="login_username" placeholder="نام کاربری" />
+    <input type="password" id="login_password" placeholder="رمز عبور" />
     <button onclick="login()">ورود</button>
     <div id="response"></div>
   </div>
 
   <script>
-    function login() {
-      const data = {
-        username: document.getElementById("login_username").value,
-        password: document.getElementById("login_password").value
-      };
+    async function login() {
+      const username = document.getElementById("login_username").value.trim();
+      const password = document.getElementById("login_password").value;
 
-      fetch("http://localhost:8000/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      })
-      .then(res => res.json())
-      .then(json => {
-        if (json.access_token) {
+      const response = document.getElementById("response");
+      response.textContent = "در حال ورود...";
+
+      try {
+        const res = await fetch("http://localhost:8000/users/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
+
+        const json = await res.json();
+
+        if (res.ok && json.access_token) {
           localStorage.setItem("token", json.access_token);
           localStorage.setItem("role", json.role);
-          document.getElementById("response").innerText = "✅ ورود موفق! خوش اومدی 🎉";
+          localStorage.setItem("userId", json.user_id); // 🔐 ذخیره شناسه کاربر
+
+          response.textContent = "✅ ورود موفق! خوش اومدی 🎉";
 
           setTimeout(() => {
             if (json.role === "admin") {
@@ -115,9 +124,11 @@ button:hover {
             }
           }, 1200);
         } else {
-          document.getElementById("response").innerText = json.detail || "❌ ورود ناموفق.";
+          response.textContent = json.detail || "❌ ورود ناموفق.";
         }
-      })
+      } catch (error) {
+        response.textContent = "❌ خطا در ارتباط با سرور.";
+      }
     }
   </script>
 </body>
