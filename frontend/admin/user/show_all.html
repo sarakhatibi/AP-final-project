@@ -98,7 +98,7 @@
   const API_URL = 'http://localhost:8000/users/display_all';
 
   
-  const token = localStorage.getItem('auth_token') || '';  
+  const token = localStorage.getItem('token') || '';  
 
   async function fetchUsers(page = 1) {
     try {
