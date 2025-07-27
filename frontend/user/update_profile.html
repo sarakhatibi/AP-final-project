@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8" />
+  <title>ویرایش پروفایل</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap');
+
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background: linear-gradient(to right, #fdf5ec, #d5eae2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+      margin: 0;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 40px 32px;
+      border-radius: 16px;
+      box-shadow: 0 12px 28px rgba(125,174,160,0.18);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #2f5d55;
+      font-size: 24px;
+    }
+
+    input {
+      margin: 10px 0;
+      padding: 12px;
+      width: 100%;
+      border: 1px solid #c3dbd4;
+      border-radius: 8px;
+      font-size: 15px;
+      background-color: #fcfaf7;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      border-color: #89b9a6;
+      outline: none;
+      box-shadow: 0 0 4px rgba(137,185,166,0.3);
+    }
+
+    button {
+      background-color: #89b9a6;
+      color: white;
+      padding: 12px;
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-top: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #6fa795;
+    }
+
+    #response {
+      margin-top: 18px;
+      background: #f3fdf9;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #1e293b;
+      min-height: 40px;
+      word-break: break-word;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>ویرایش پروفایل کاربری</h2>
+    <form id="editProfileForm">
+      <input type="text" id="full_name" placeholder="نام کامل" required />
+      <input type="text" id="username" placeholder="نام کاربری" required />
+      <input type="email" id="email" placeholder="ایمیل" required />
+      <input type="password" id="password" placeholder="رمز عبور جدید (اختیاری)" />
+      <button type="submit">ثبت تغییرات</button>
+    </form>
+
+    <div id="response"></div>
+  </div>
+
+  <script>
+    
+    const token = localStorage.getItem("token") || localStorage.getItem("access_token");
+    const userId = localStorage.getItem("userId"); 
+
+    const responseDiv = document.getElementById("response");
+    const form = document.getElementById("editProfileForm");
+
+    if (!token || !userId) {
+      responseDiv.textContent = "❌ شما وارد نشده‌اید. لطفاً ابتدا وارد شوید.";
+      form.style.display = "none";
+    } else {
+    
+      fetch(`http://localhost:8000/users/${userId}`, {
+        headers: { "Authorization": `Bearer ${token}` },
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("خطا در دریافت اطلاعات کاربر");
+        return res.json();
+      })
+      .then(data => {
+        document.getElementById("full_name").value = data.full_name || "";
+        document.getElementById("username").value = data.username || "";
+        document.getElementById("email").value = data.email || "";
+      })
+      .catch(err => {
+      
+        responseDiv.textContent = "⚠️ " + err.message;
+      });
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const full_name = document.getElementById("full_name").value.trim();
+      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      const payload = { full_name, username, email };
+      if (password && password.trim() !== "") {
+        payload.password = password;
+      }
+
+      responseDiv.textContent = "در حال ارسال...";
+
+      try {
+        const res = await fetch(`http://localhost:8000/users/edit/${userId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.detail || data.message || "خطا در ارسال درخواست");
+
+        responseDiv.textContent = "✅ ویرایش با موفقیت انجام شد.";
+        form.reset();
+      } catch (error) {
+        responseDiv.textContent = "❌ خطا: " + error.message;
+      }
+    });
+  </script>
+</body>
+</html>
+
