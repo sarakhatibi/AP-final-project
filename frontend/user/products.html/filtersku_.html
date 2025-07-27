@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>جست‌وجو محصول با کد (SKU)</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(to left, #fdf6ef, #e6f4ee);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+      margin: 0;
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 35px 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(125, 174, 160, 0.3);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2e6651;
+      font-size: 26px;
+      margin-bottom: 25px;
+    }
+
+    label, input, button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+
+    input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      background-color: #89b9a6;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background-color: #74ab94;
+      transform: translateY(-2px);
+    }
+
+    #sku_result {
+      white-space: pre-wrap;
+      margin-top: 20px;
+      background-color: #f2f2f2;
+      padding: 15px;
+      border-radius: 10px;
+      color: #333;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    #sku_result button {
+      background-color: #e6a57e;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    #sku_result button:hover {
+      background-color: #d8926c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>جست‌وجو محصول با کد (SKU)</h2>
+
+    <label for="search_sku">کد محصول:</label>
+    <input type="text" id="search_sku">
+
+    <button onclick="searchBySku()">جست‌وجو</button>
+    <div id="sku_result"></div>
+  </div>
+
+  <script>
+    function goBack() {
+      history.back();
+    }
+
+    function searchBySku() {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        document.getElementById("sku_result").innerHTML =
+          "❌ ابتدا وارد شوید.<br><button onclick='goBack()'>🔙 بازگشت</button>";
+        return;
+      }
+
+      const sku = document.getElementById("search_sku").value;
+      if (!sku) {
+        document.getElementById("sku_result").innerHTML =
+          "❌ لطفاً کد محصول را وارد کنید.<br><button onclick='goBack()'>🔙 بازگشت</button>";
+        return;
+      }
+
+      fetch(`http://localhost:8000/products/filter_sku?sku=${encodeURIComponent(sku)}`, {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + token
+        }
+      })
+      .then(res => res.json())
+      .then(json => {
+        if (!json || json.length === 0) {
+          document.getElementById("sku_result").innerHTML =
+            "🚫 محصولی با این کد یافت نشد.<br><button onclick='goBack()'>🔙 بازگشت</button>";
+          return;
+        }
+
+        let result = "✅ محصول یافت‌شده:\n";
+        json.forEach(p => {
+          result +=
+           "شناسه محصول: " + p.id + "\n" +
+            "نام محصول: " + p.name + "\n" +
+            "کد محصول: " + p.sku + "\n" +
+            "قیمت: " + p.price + "\n" +
+            "تعداد موجودی: " + p.quantity + "\n" +
+            "حداقل موجودی قابل قبول: " + p.min_threshold + "\n" +
+            "دسته‌بندی: " + (p.category || "-") + "\n" +
+            "لینک تصویر: " + (p.image || "-") + "\n" +
+            "------------------------\n";
+        });
+
+        document.getElementById("sku_result").innerHTML =
+          result + "<button onclick='goBack()'>🔙 بازگشت</button>";
+      })
+      .catch(err => {
+        document.getElementById("sku_result").innerHTML =
+          "⚠️ خطا در دریافت اطلاعات: " + err + "<br><button onclick='goBack()'>🔙 بازگشت</button>";
+      });
+    }
+  </script>
+</body>
+</html>
