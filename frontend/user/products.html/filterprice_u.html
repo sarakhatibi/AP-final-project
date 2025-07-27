@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>جست‌وجوی محصول بر اساس قیمت</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(to left, #fdf6ef, #e6f4ee);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+      margin: 0;
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 35px 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(125, 174, 160, 0.3);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2e6651;
+      font-size: 26px;
+      margin-bottom: 25px;
+    }
+
+    label, input, button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+
+    input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      background-color: #89b9a6;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background-color: #74ab94;
+      transform: translateY(-2px);
+    }
+
+    #result {
+      white-space: pre-wrap;
+      margin-top: 20px;
+      background-color: #f2f2f2;
+      padding: 15px;
+      border-radius: 10px;
+      color: #333;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    #result button {
+      background-color: #e6a57e;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    #result button:hover {
+      background-color: #d8926c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔍 جست‌وجوی محصول بر اساس قیمت</h2>
+
+    <label for="min_price">حداقل قیمت:</label>
+    <input type="number" id="min_price">
+
+    <label for="max_price">حداکثر قیمت:</label>
+    <input type="number" id="max_price">
+
+    <button onclick="searchPrice()">جست‌وجو</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function goBack() {
+      history.back();
+    }
+
+    function searchPrice() {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        document.getElementById("result").innerHTML = "❌ ابتدا وارد شوید.<br><button onclick='goBack()'>🔙 بازگشت</button>";
+        return;
+      }
+
+      const min = document.getElementById("min_price").value;
+      const max = document.getElementById("max_price").value;
+      const page = 1;
+      const limit = 10;
+
+      let query = `?page=${page}&limit=${limit}`;
+      if (min) query += `&min_price=${min}`;
+      if (max) query += `&max_price=${max}`;
+
+      fetch(`http://localhost:8000/products/filter_price${query}`, {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + token
+        }
+      })
+      .then(res => {
+        if (res.status === 404) return res.json().then(err => { throw err });
+        return res.json();
+      })
+      .then(json => {
+        if (!json.products || json.products.length === 0) {
+          document.getElementById("result").innerHTML = "🚫 محصولی یافت نشد.<br><button onclick='goBack()'>🔙 بازگشت</button>";
+          return;
+        }
+
+        let out = `✅ صفحه ${json.page} - نمایش ${json.products.length} محصول:\n`;
+        json.products.forEach(p => {
+          out +=
+           "شناسه محصول: " + p.id + "\n" +
+            "نام محصول: " + p.name + "\n" +
+            "کد (SKU): " + p.sku + "\n" +
+            "قیمت: " + p.price + "\n" +
+            "تعداد: " + p.quantity + "\n" +
+            "حداقل موجودی قابل قبول: " + p.min_threshold + "\n" +
+            "دسته‌بندی: " + (p.category || "-") + "\n" +
+            "لینک تصویر: " + (p.image_url || "-") + "\n" +
+            "------------------------\n";
+        });
+
+        document.getElementById("result").innerHTML = out + "<button onclick='goBack()'>🔙 بازگشت</button>";
+      })
+      .catch(err => {
+        document.getElementById("result").innerHTML = `❌ خطا: ${err.detail || err}<br><button onclick='goBack()'>🔙 بازگشت</button>`;
+      });
+    }
+  </script>
+</body>
+</html>
