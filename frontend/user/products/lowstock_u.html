@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>هشدار موجودی کم</title>
   <style>
-
     body {
       font-family: "Segoe UI", Tahoma, sans-serif;
       background: linear-gradient(to left, #fdf6ef, #e6f4ee);
@@ -23,41 +22,13 @@
       box-shadow: 0 6px 20px rgba(125, 174, 160, 0.3);
       max-width: 500px;
       width: 100%;
+      text-align: center;
     }
 
     h2 {
-      text-align: center;
       color: #2e6651;
       font-size: 26px;
       margin-bottom: 25px;
-    }
-
-    label, input, button {
-      display: block;
-      width: 100%;
-      margin: 10px 0;
-      font-size: 16px;
-    }
-
-    input {
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-
-    button {
-      background-color: #89b9a6;
-      color: #fff;
-      border: none;
-      padding: 12px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background-color 0.3s, transform 0.2s;
-    }
-
-    button:hover {
-      background-color: #74ab94;
-      transform: translateY(-2px);
     }
 
     #response {
@@ -69,21 +40,24 @@
       color: #333;
       font-size: 15px;
       line-height: 1.6;
+      min-height: 100px;
     }
 
-    #response button {
-      background-color: #e6a57e;
-      color: white;
-      padding: 10px;
+    button {
+      background-color: #89b9a6;
+      color: #fff;
       border: none;
-      border-radius: 8px;
-      margin-top: 10px;
-      font-size: 15px;
+      padding: 12px 25px;
+      border-radius: 10px;
       cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      margin-top: 25px;
+      font-size: 16px;
     }
 
-    #response button:hover {
-      background-color: #d8926c;
+    button:hover {
+      background-color: #74ab94;
+      transform: translateY(-2px);
     }
   </style>
 </head>
@@ -96,14 +70,21 @@
 
   <script>
     async function fetchLowStock() {
+      const container = document.getElementById("response");
+
       try {
-        const res = await fetch("/products/low-stock"); 
+        
+        const res = await fetch("http://localhost:8000/products/low-stock");
+        
+        if (!res.ok) {
+          throw new Error(`خطا در دریافت اطلاعات: ${res.status} ${res.statusText}`);
+        }
+
         const data = await res.json();
 
-        const container = document.getElementById("response");
         container.innerHTML = "";
 
-        if (data.length === 0) {
+        if (!Array.isArray(data) || data.length === 0) {
           container.innerHTML = "<p>🎉 همه کالاها موجودند، چیزی کم نیست!</p>";
           return;
         }
@@ -115,7 +96,7 @@
         });
       } catch (error) {
         console.error("خطا:", error);
-        document.getElementById("response").textContent = "❌ خطا در دریافت اطلاعات!";
+        container.textContent = "❌ خطا در دریافت اطلاعات!";
       }
     }
 
