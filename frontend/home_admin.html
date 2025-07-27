@@ -14,15 +14,15 @@
       direction: rtl;
       margin: 0;
     }
-     .dashboard {
+    .dashboard {
       background-color: #ffffff;
-       padding: 35px 30px;
+      padding: 35px 30px;
       border-radius: 15px;
       box-shadow: 0 6px 20px rgba(125, 174, 160, 0.3);
       max-width: 500px;
       width: 100%;
     }
-
+    
     h1 {
       text-align: center;
       color: #2e6651;
@@ -41,11 +41,11 @@
       margin: 10px 0;
       border-radius: 10px;
       font-size: 16px;
-       cursor: pointer;
+      cursor: pointer;
       text-align: center;
       transition: background-color 0.3s, transform 0.2s;
     }
-     li:hover {
+    li:hover {
       background-color: #74ab94;
       transform: translateY(-2px);
     }
@@ -53,18 +53,16 @@
   </style>
 </head>
 <body>
-  <div class="dashboard"></div>
-   
-      <h1> 🌿به قسمت ادمین خوش آمدید</h1>
+  <div class="dashboard">
+    <h1>🌿 به قسمت ادمین خوش آمدید</h1>
     <ul>
-      <li onclick="goTo('admin/product/mahsoolat.html')"></li>>🛍️ محصولات</li>
-       <li onclick="goTo('admin/providers/home_provider.html')">🏢 تأمین‌کنندگان</li>
+      <li onclick="goTo('admin/product/mahsoolat.html')">🛍️ محصولات</li>
+      <li onclick="goTo('admin/providers/home_provider.html')">🏢 تأمین‌کنندگان</li>
       <li onclick="location.href='users.html'">👥 مدیریت کاربران</li>
       <li onclick="location.href='reports.html'">📊 گزارش‌ها</li>
-      <li onclick="goTo('admin/order/order_home.html')"></li>>📝 سفارش خرید</li>
+      <li onclick="goTo('admin/order/order_home.html')">📝 سفارش خرید</li>
     </ul>
-
-     </div>
+  </div>
 
 
   <script>
@@ -75,13 +73,13 @@
     function logout() {
       localStorage.removeItem("token");
       alert("✅ خروج انجام شد.");
-    
+
       goTo("login.html");
+
     }
   </script>
 </body>
-
-
+</html>
 
 
 

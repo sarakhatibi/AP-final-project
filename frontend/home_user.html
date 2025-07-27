@@ -2,7 +2,8 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
-   <style>
+  <title>صفحه کاربر</title>
+  <style>
     body {
       font-family: "Segoe UI", Tahoma, sans-serif;
       background: linear-gradient(to left, #fdf6ef, #e6f4ee);
@@ -30,20 +31,11 @@
       margin-bottom: 25px;
     }
 
-    label, input, button {
+    button {
       display: block;
       width: 100%;
       margin: 10px 0;
       font-size: 16px;
-    }
-
-    input {
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-
-    button {
       background-color: #89b9a6;
       color: #fff;
       border: none;
@@ -57,45 +49,19 @@
       background-color: #74ab94;
       transform: translateY(-2px);
     }
-
-    #response {
-      white-space: pre-wrap;
-      margin-top: 20px;
-      background-color: #f2f2f2;
-      padding: 15px;
-      border-radius: 10px;
-      color: #333;
-      font-size: 15px;
-      line-height: 1.6;
-    }
-
-    #response button {
-      background-color: #e6a57e;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      margin-top: 10px;
-      font-size: 15px;
-      cursor: pointer;
-    }
-
-    #response button:hover {
-      background-color: #d8926c;
-    }
   </style>
 </head>
 <body>
-   <div class="dashboard"></div>
-  <h2>👋 خوش آمدی کاربر گرامی!</h2>
-  <button onclick="goTo('profile.html')">🙍‍♀️ ویرایش اطلاعات</button>
-  <button onclick="goTo('user/products/product_home.html')">📦 مشاهده محصولات</button>
-  <button onclick="goTo('wallet/charge_wallet.html')">💰 شارژ کیف پول</button>
-  <button onclick="goTo('orders/add_order.html')">📝 ثبت سفارش</button>
-  <button onclick="goTo('orders/delete_order.html')">❌ حذف سفارش</button>
-  <button onclick="goTo('orders/track_order.html')">🔍 پیگیری سفارش</button>
-  <button onclick="logout()">🔓 خروج از حساب</button>
-</div>
+  <div class="container">
+    <h2>👋 خوش آمدی کاربر گرامی!</h2>
+    <button onclick="goTo('profile.html')">🙍‍♀️ ویرایش اطلاعات</button>
+    <button onclick="goTo('user/products/pruduct_home.html')">📦 مشاهده محصولات</button>
+    <button onclick="goTo('wallet/charge_wallet.html')">💰 شارژ کیف پول</button>
+    <button onclick="goTo('orders/add_order.html')">📝 ثبت سفارش</button>
+    <button onclick="goTo('orders/delete_order.html')">❌ حذف سفارش</button>
+    <button onclick="goTo('orders/track_order.html')">🔍 پیگیری سفارش</button>
+    <button onclick="logout()">🔓 خروج از حساب</button>
+  </div>
 
   <script>
     function goTo(page) {
@@ -106,7 +72,7 @@
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       alert("✅ خروج انجام شد.");
-        goTo("login.html");
+      goTo("login.html");
     }
   </script>
 </body>
