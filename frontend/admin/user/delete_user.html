@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>حذف کاربر</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap');
+
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background: linear-gradient(to right, #fdf5ec, #d5eae2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+      margin: 0;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 40px 32px;
+      border-radius: 16px;
+      box-shadow: 0 12px 28px rgba(125,174,160,0.18);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #2f5d55;
+      font-size: 24px;
+    }
+
+    input {
+      margin: 10px 0;
+      padding: 12px;
+      width: 100%;
+      border: 1px solid #c3dbd4;
+      border-radius: 8px;
+      font-size: 15px;
+      background-color: #fcfaf7;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      border-color: #89b9a6;
+      outline: none;
+      box-shadow: 0 0 4px rgba(137,185,166,0.3);
+    }
+
+    button {
+      background-color: #89b9a6;
+      color: white;
+      padding: 12px;
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-top: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #6fa795;
+    }
+
+    #response {
+      margin-top: 18px;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      min-height: 40px;
+      word-break: break-word;
+      text-align: center;
+    }
+
+    .success {
+      background-color: #e6f7f1;
+      color: #2f5d55;
+      border: 1px solid #89b9a6;
+    }
+
+    .error {
+      background-color: #fdecea;
+      color: #8f3f3f;
+      border: 1px solid #dd9999;
+    }
+
+    .loading {
+      background-color: #fff8e6;
+      color: #996a00;
+      border: 1px solid #e6c95b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>حذف کاربر با آیدی</h2>
+    <input type="number" id="userId" placeholder="آیدی کاربر را وارد کنید" />
+    <button onclick="deleteUser()">🗑️ حذف کاربر</button>
+    <button onclick="goBack()">🔙 بازگشت</button>
+    <div id="response"></div>
+  </div>
+
+  <script>
+    async function deleteUser() {
+      const userId = document.getElementById("userId").value.trim();
+      const token = localStorage.getItem("token");
+      const responseDiv = document.getElementById("response");
+
+      if (!userId) {
+        responseDiv.textContent = "⚠️ لطفاً آیدی معتبر وارد کنید.";
+        responseDiv.className = "error";
+        return;
+      }
+
+      responseDiv.textContent = "⏳ در حال ارسال درخواست...";
+      responseDiv.className = "loading";
+
+      try {
+        const res = await fetch(`http://localhost:8000/users/delete/${userId}`, {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+
+        if (res.status === 204) {
+          responseDiv.textContent = "✅ کاربر با موفقیت حذف شد.";
+          responseDiv.className = "success";
+        } else {
+          const errorText = await res.text();
+          responseDiv.textContent = `❌ خطا: ${errorText}`;
+          responseDiv.className = "error";
+        }
+      } catch (error) {
+        responseDiv.textContent = "❌ خطا در ارتباط با سرور.";
+        responseDiv.className = "error";
+      }
+    }
+
+    function goBack() {
+      window.history.back();
+    }
+  </script>
+</body>
+</html>
