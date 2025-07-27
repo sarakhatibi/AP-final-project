@@ -85,7 +85,12 @@
   <script>
     async function fetchProviders() {
       try {
-        const response = await fetch("http://localhost:8000/providers/list");
+        const response = await fetch("http://localhost:8000/providers/display_all", {
+  method: "GET",
+  headers: {
+    "Authorization": `Bearer ${localStorage.getItem("token")}`
+  }
+});
         const providers = await response.json();
 
         const tableBody = document.getElementById("providerTable");

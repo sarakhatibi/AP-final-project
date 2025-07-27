@@ -115,11 +115,12 @@
       };
 
       try {
-        const response = await fetch(`http://localhost:8000/providers/update/${providerId}`, {
+        const response = await fetch(`http://localhost:8000/providers/edit/${providerId}`, {
           method: "PUT",
           headers: {
-            "Content-Type": "application/json"
-          },
+  "Authorization": `Bearer ${localStorage.getItem("token")}`,
+  "Content-Type": "application/json"
+},
           body: JSON.stringify(data)
         });
 
