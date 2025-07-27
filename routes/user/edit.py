@@ -8,7 +8,7 @@ from security.hash import hash_password
 
 router = APIRouter()
 
-@router.put("/edit/{user_id}")
+@router.put("/edit/{user_id},response_model=UserUpdateResponse")
 def update_user(
     user_id: int,
     user_update: UserUpdate,

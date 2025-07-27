@@ -32,6 +32,10 @@ class UserUpdate(BaseModel):
 
 
 
+class UserUpdateResponse(BaseModel):
+    msg: str
+    user: UserRead
+
 
 
 class WalletChargeRequest(BaseModel):

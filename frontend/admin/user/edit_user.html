@@ -126,7 +126,7 @@
       setResponse("❌ شما وارد نشده‌اید. لطفاً ابتدا وارد شوید.", "error");
       form.style.display = "none";
     } else {
-      fetch(`http://localhost:8000/users/${userId}`, {
+      fetch(`http://localhost:8000/users/edit/${userId}`, {
         headers: { "Authorization": `Bearer ${token}` },
       })
       .then(res => {
