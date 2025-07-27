@@ -75,20 +75,22 @@
     <div id="user-list"></div>
   </div>
 
-  <script>
-    function loadUsers() {
-      const token = localStorage.getItem("token");
-      fetch("http://localhost:8000/users", {
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        }
-      })
-      .then(res => res.json())
-      .then(data => {
-        const list = document.getElementById("user-list");
-        list.innerHTML = "";
+<script>
+  function loadUsers() {
+    const token = localStorage.getItem("token");
 
+    fetch("http://localhost:8000/users", {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      const list = document.getElementById("user-list");
+      list.innerHTML = "";
+
+      if (Array.isArray(data)) {
         data.forEach(user => {
           const card = document.createElement("div");
           card.className = "user-card";
@@ -100,14 +102,17 @@
           `;
           list.appendChild(card);
         });
-      })
-      .catch(err => {
-        document.getElementById("user-list").innerHTML =
-          `<div class="user-card">⚠️ خطا در دریافت کاربران: ${err}</div>`;
-      });
-    }
+      } else {
+        list.innerHTML = `<div class="user-card">⚠️ قالب داده‌ها صحیح نیست: ${JSON.stringify(data)}</div>`;
+      }
+    })
+    .catch(err => {
+      document.getElementById("user-list").innerHTML =
+        `<div class="user-card">⚠️ خطا در دریافت کاربران: ${err.message}</div>`;
+    });
+  }
 
-    window.onload = () => loadUsers();
-  </script>
+  window.onload = () => loadUsers();
+</script>
 </body>
 </html>
