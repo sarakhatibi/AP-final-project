@@ -2,7 +2,7 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
-  <title>نمایش همه کالاها به ترتیب نام</title>
+  <title>نمایش کالا بر اساس قیمت</title>
   <style>
     body {
       font-family: "Segoe UI", Tahoma, sans-serif;
@@ -78,13 +78,13 @@
 </head>
 <body>
   <div class="container">
-    <h2>لیست کالاها به ترتیب نام</h2>
-    <button onclick="loadByName()">📋 نمایش کالاها</button>
+    <h2>نمایش کالاها به ترتیب قیمت</h2>
+    <button onclick="loadByPrice()">📦 دریافت کالاها</button>
     <div id="sku_result"></div>
   </div>
 
   <script>
-    function loadByName() {
+    function loadByPrice() {
       const token = localStorage.getItem("token");
       if (!token) {
         document.getElementById("sku_result").innerHTML = "❌ ابتدا وارد شوید.<br><button onclick='history.back()'>🔙 بازگشت</button>";
@@ -94,7 +94,7 @@
       const page = 1;
       const limit = 10;
 
-      fetch(`http://localhost:8000/products/showallbyname?page=${page}&limit=${limit}`, {
+      fetch(`http://localhost:8000/products/showbyprice?page=${page}&limit=${limit}`, {
         method: "GET",
         headers: {
           "Authorization": "Bearer " + token
@@ -112,7 +112,7 @@
           return;
         }
 
-        let result = "✅ لیست کالاها:\n";
+        let result = "✅ لیست کالاها بر اساس قیمت:\n";
         json.forEach(p => {
           result +=
            "شناسه محصول: " + p.id + "\n" +
@@ -130,8 +130,7 @@
         document.getElementById("sku_result").innerHTML = result;
       })
       .catch(err => {
-        document.getElementById("sku_result").innerHTML =
-          "⚠️ خطا در دریافت اطلاعات: " + err + "<br><button onclick='history.back()'>🔙 بازگشت</button>";
+        document.getElementById("sku_result").innerHTML = "⚠️ خطا در دریافت اطلاعات: " + err + "<br><button onclick='history.back()'>🔙 بازگشت</button>";
       });
     }
   </script>
