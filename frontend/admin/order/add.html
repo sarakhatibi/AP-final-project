@@ -26,7 +26,7 @@
     }
 
     h2 {
-       color: #2e6651;
+      color: #2e6651;
       margin-bottom: 20px;
       font-size: 24px;
     }
@@ -38,7 +38,7 @@
       font-size: 15px;
       border-radius: 8px;
       border: 1px solid #b9cfc7;
-     }
+    }
 
     input:focus, select:focus {
       border-color: #5f927e;
@@ -48,9 +48,9 @@
     button {
       background-color: #5f927e;
       color: white;
-       border: none;
-       cursor: pointer;
-       transition: background-color 0.3s, transform 0.2s;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
     }
 
     button:hover {
@@ -71,13 +71,15 @@
       padding: 10px;
       border: none;
       border-radius: 8px;
-       cursor: pointer;
+      cursor: pointer;
     }
 
     #response button:hover {
       background-color: #d8926c;
     }
   </style>
+  <!-- اضافه کردن CSS flatpickr -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
   <div class="dashboard">
@@ -93,6 +95,7 @@
       <option value="closed">بسته‌شده</option>
     </select>
     <input type="text" id="category" placeholder="دسته‌بندی (اختیاری)">
+    <input type="text" id="expected_date" placeholder="تاریخ مورد انتظار برای تحویل" required>
     <button onclick="submitOrder()">ثبت سفارش</button>
     <div id="response"></div>
   </div>
@@ -107,15 +110,16 @@
         return;
       }
 
-     const order = {
-  name: document.getElementById("name").value,
-  price: parseFloat(document.getElementById("price").value),
-  quantity: parseInt(document.getElementById("quantity").value),
-  provider_id: parseInt(document.getElementById("provider_id").value),
-  status: document.getElementById("status").value,
-  category: document.getElementById("category").value || null,
-  order_date: new Date().toISOString()   
-};
+      const order = {
+        name: document.getElementById("name").value,
+        price: parseFloat(document.getElementById("price").value),
+        quantity: parseInt(document.getElementById("quantity").value),
+        provider_id: parseInt(document.getElementById("provider_id").value),
+        status: document.getElementById("status").value,
+        category: document.getElementById("category").value || null,
+        order_date: new Date().toISOString(),
+        expected_date: new Date(document.getElementById("expected_date").value).toISOString()
+      };
 
       fetch("http://localhost:8000/orders/add", {
         method: "POST",
@@ -125,7 +129,11 @@
         },
         body: JSON.stringify(order)
       })
-      .then(res => res.json())
+      .then(async res => {
+        const data = await res.json();
+        if (!res.ok) throw data;
+        return data;
+      })
       .then(data => {
         if (data.order) {
           responseBox.innerHTML = `
@@ -135,21 +143,36 @@
             <button onclick="history.back()">🔙 بازگشت</button>
           `;
         } else {
+          const errors = Array.isArray(data.detail)
+            ? data.detail.map(e => `🔸 ${e.loc?.[1] || "فیلد"}: ${e.msg}`).join("<br>")
+            : data.detail || "پاسخ نامعتبر از سرور";
+
           responseBox.innerHTML = `
-            ❌ خطا در پاسخ دریافتی<br>
-            جزئیات: ${data.detail || "پاسخ نامعتبر از سرور"}<br>
+            ❌ خطا در پاسخ دریافتی<br>${errors}<br>
             <button onclick="history.back()">🔙 بازگشت</button>
           `;
         }
       })
       .catch(err => {
+        const errorText = Array.isArray(err.detail)
+          ? err.detail.map(e => `${e.loc?.[1]}: ${e.msg}`).join("<br>")
+          : err.detail || err.message || "خطای ناشناخته";
+
         responseBox.innerHTML = `
-          ⚠️ خطا در ارسال درخواست<br>
-          ${err}<br>
+          ⚠️ خطا در ارسال درخواست<br>${errorText}<br>
           <button onclick="history.back()">🔙 بازگشت</button>
         `;
       });
     }
+  </script>
+
+  <!-- اسکریپت تقویم flatpickr -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script>
+    flatpickr("#expected_date", {
+      dateFormat: "Y-m-d",
+      minDate: "today"
+    });
   </script>
 </body>
 </html>
