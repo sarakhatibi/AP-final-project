@@ -103,24 +103,34 @@
   return;
 }
 
-      fetch(`http://localhost:8000/orders/delete/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      })
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById("response").innerHTML = `
-          <div>✅ سفارش ${data.deleted_order_id} با موفقیت حذف شد</div>
-          <button onclick="history.back()">🔙 برگشت</button>
-        `;
-      })
-      .catch(err => {
-        document.getElementById("response").innerHTML =
-          `<div>⚠️ خطا در حذف سفارش: ${err}</div>`;
-      });
+fetch(`http://localhost:8000/orders/delete/${id}`, {
+  method: "DELETE",
+  headers: {
+    "Authorization": `Bearer ${token}`,
+    "Content-Type": "application/json"
+  }
+})
+.then(async res => {
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.detail || "خطای ناشناخته");
+  }
+  return res.json();
+})
+.then(data => {
+  document.getElementById("response").innerHTML = `
+    <div>✅ سفارش ${data.deleted_order_id} با موفقیت حذف شد</div>
+    <button onclick="history.back()">🔙 برگشت</button>
+  `;
+})
+.catch(err => {
+  let msg = err.message;
+  if (msg === "Order not found") msg = "سفارشی با این شناسه یافت نشد!";
+  document.getElementById("response").innerHTML = `
+    <div>⚠️ ${msg}</div>
+    <button onclick="history.back()">🔙 برگشت</button>
+  `;
+});
     }
   </script>
 </body>
