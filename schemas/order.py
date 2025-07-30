@@ -17,13 +17,17 @@ class OrderUpdate(SQLModel):
 
 
 class OrderCreate(SQLModel):
-    quantity:int
-    order_date: datetime  
+    provider_id: Optional[int]
+    status: str
+    quantity: int
     name: str
-    price:float
-    category: Optional[str] = None
-    status: OrderStatus= OrderStatus.draft 
-    provider_id: int
+    price: float
+    category: Optional[str]
+    order_date: Optional[datetime] = None
+    delivery_date: Optional[datetime] = None
+    expected_date: Optional[datetime] = None
+
+
 
 class OrderRead(SQLModel):
     id: Optional[int] 
