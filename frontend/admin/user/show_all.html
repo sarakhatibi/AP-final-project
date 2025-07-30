@@ -73,6 +73,23 @@
       color: red;
       min-height: 24px;
     }
+.back-button {
+  width: 100%;
+  height: 44px;
+  background-color: #89b9a6;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.back-button:hover {
+  background-color: #74ab94;
+  transform: translateY(-2px);
+}
   </style>
 </head>
 <body>
@@ -84,6 +101,7 @@
     <button id="nextBtn">صفحه بعد</button>
 
     <div id="message"></div>
+    <button onclick="goBack()" class="back-button">🔙 بازگشت</button>
   </div>
 
 <script>
@@ -176,6 +194,9 @@
 
  
   fetchUsers(currentPage);
+      function goBack() {
+      window.history.back();
+    }
 </script>
 
 </body>
