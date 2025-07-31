@@ -111,20 +111,34 @@
         const list = document.getElementById("order-list");
         list.innerHTML = "";
 
-        data.forEach(order => {
-          const card = document.createElement("div");
-          card.className = "order-card";
-          card.innerHTML = `
-            <div><strong>نام:</strong> ${order.name}</div>
-            <div><strong>قیمت:</strong> ${order.price.toLocaleString()} تومان</div>
-            <div><strong>تعداد:</strong> ${order.quantity}</div>
-            <div><strong>شناسه تامین‌کننده:</strong> ${order.provider_id}</div>
-            <div><strong>تاریخ سفارش:</strong> ${new Date(order.order_date).toLocaleDateString()}</div>
-            <div><strong>وضعیت:</strong> ${order.status}</div>
-            <div><strong>دسته‌بندی:</strong> ${order.category || '-'}</div>
-          `;
-          list.appendChild(card);
-        });
+data.forEach(order => {
+  const card = document.createElement("div");
+
+ let faDate = "نامشخص";
+
+if (order.expected_delivery_date && typeof order.expected_delivery_date === "string") {
+  const datePart = order.expected_delivery_date.split(" ")[0];
+  const parsedDate = new Date(datePart);
+
+  if (!isNaN(parsedDate.getTime())) {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    faDate = parsedDate.toLocaleDateString("fa-IR", options);
+  }
+}
+
+  card.className = "order-card";
+  card.innerHTML = `
+    <div><strong>نام:</strong> ${order.name}</div>
+    <div><strong>قیمت:</strong> ${order.price.toLocaleString()} تومان</div>
+    <div><strong>تعداد:</strong> ${order.quantity}</div>
+    <div><strong>شناسه تامین‌کننده:</strong> ${order.provider_id}</div>
+    <div><strong>تاریخ سفارش:</strong> ${new Date(order.order_date).toLocaleDateString("fa-IR")}</div>
+    <div><strong>وضعیت:</strong> ${order.status}</div>
+    <div><strong>دسته‌بندی:</strong> ${order.category || '-'}</div>
+    <div><strong>تاریخ تحویل مورد انتظار:</strong> ${faDate}</div>
+  `;
+  list.appendChild(card);
+});
       })
       .catch(err => {
         document.getElementById("order-list").innerHTML =

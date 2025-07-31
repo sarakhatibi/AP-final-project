@@ -121,7 +121,7 @@
           <div class="field"><strong>قیمت:</strong> ${order.price.toLocaleString()} تومان</div>
           <div class="field"><strong>تعداد:</strong> ${order.quantity}</div>
           <div class="field"><strong>تامین‌کننده:</strong> ${order.provider_id}</div>
-          <div class="field"><strong>تاریخ:</strong> ${new Date(order.order_date).toLocaleDateString()}</div>
+          <div class="field"><strong> تاریخ سفارش:</strong> ${new Date(order.order_date).toLocaleDateString()}</div>
           <div class="field"><strong>وضعیت:</strong> ${order.status}</div>
           <div class="field"><strong>دسته‌بندی:</strong> ${order.category || '-'}</div>
           <button onclick="history.back()">🔙 برگشت</button>

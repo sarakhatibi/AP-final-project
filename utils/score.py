@@ -5,7 +5,7 @@ def calculate_provider_score(provider_id: int, session: Session) -> float:
     orders = session.exec(
         select(Order)
         .where(Order.provider_id == provider_id)
-        .where(Order.status == OrderStatus.recived) 
+        .where(Order.status == OrderStatus.received) 
     ).all()
 
     if not orders:

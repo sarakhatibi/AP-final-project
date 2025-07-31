@@ -17,15 +17,13 @@ class OrderUpdate(SQLModel):
 
 
 class OrderCreate(SQLModel):
-    provider_id: Optional[int] = Field(default=None)
-    status: OrderStatus = Field(..., title="وضعیت سفارش")
-    quantity: int = Field(..., title="تعداد", ge=1)
-    name: str = Field(..., title="نام سفارش", min_length=1)
-    price: float = Field(..., title="قیمت", gt=0)
-    category: Optional[str] = Field(default=None)
-    order_date: Optional[datetime] = Field(default=None)
-    delivery_date: Optional[datetime] = Field(default=None)
-    expected_date: Optional[datetime] = Field(default=None)
+    name: str = Field(..., min_length=1, description="نام کالا الزامی است")
+    price: float = Field(..., gt=0, description="قیمت باید بیشتر از صفر باشد")
+    quantity: int = Field(..., gt=0, description="تعداد باید بیشتر از صفر باشد")
+    provider_id: int = Field(..., description="شناسه تأمین‌کننده الزامی است")
+    status: str = Field(..., description="وضعیت سفارش الزامی است")
+    category: Optional[str] = Field(None)  # اختیاریه
+    expected_date: datetime = Field(..., description="تاریخ تحویل الزامی است")
 
 
 class OrderRead(SQLModel):
@@ -37,4 +35,4 @@ class OrderRead(SQLModel):
     name: str
     price:float
     category: Optional[str] = None
-
+    expected_date: datetime
