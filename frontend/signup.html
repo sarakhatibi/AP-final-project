@@ -108,9 +108,15 @@
         body: JSON.stringify(data)
       })
       .then(res => res.json())
-      .then(json => {
-        document.getElementById("response").innerText = json.msg || JSON.stringify(json);
-      })
+.then(json => {
+console.log(json);
+  if (json.msg && json.msg.includes("ثبت")) {
+    window.location.href = "home_user.html";
+
+  } else {
+    document.getElementById("response").innerText = json.msg || JSON.stringify(json);
+  }
+})
       .catch(err => {
         document.getElementById("response").innerText = "⚠️ خطا در ثبت‌نام: " + err;
       });

@@ -133,9 +133,11 @@
       if (!orderId) return;
 
       try {
-        const res = await fetch(`http://localhost:8000/sales_order/status/${orderId}`, {
-          headers: { "Content-Type": "application/json" },
-        });
+const res = await fetch(`http://localhost:8000/sales_order/status/${orderId}`, {
+  method: "PUT",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ order_id: orderId })
+});
 
         if (!res.ok) {
           const errData = await res.json();
