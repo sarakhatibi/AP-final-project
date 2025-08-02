@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from datetime import datetime
 from sqlmodel import Session
 from database.connection import get_db 
-from services.report import get_top_products
+from services.reportt import get_top_products
 
 router = APIRouter()
 

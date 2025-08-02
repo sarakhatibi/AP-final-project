@@ -16,7 +16,7 @@ class StatusUpdate(BaseModel):
         return v
 
 class  OrdersalesCreate(BaseModel):
-    order_id: Optional[int] = None
+
     product_id: int
     user_id: int
     quantity: int
