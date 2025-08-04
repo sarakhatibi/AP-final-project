@@ -108,8 +108,8 @@
     <label for="category">دسته‌بندی محصول:</label>
     <input type="text" id="category">
 
-    <label for="image_url">لینک تصویر محصول (اختیاری):</label>
-    <input type="text" id="image_url">
+    <label for="image">لینک تصویر محصول (اختیاری):</label>
+    <input type="text" id="image">
 
     <button onclick="addProduct()">ثبت محصول</button>
     <div id="response"></div>
@@ -135,7 +135,7 @@
         quantity: parseInt(document.getElementById("quantity").value),
         min_threshold: parseInt(document.getElementById("min_threshold").value),
         category: document.getElementById("category").value,
-        image_url: document.getElementById("image_url").value
+        image: document.getElementById("image").value
       };
 
       if (!data.sku || !data.name || isNaN(data.price)) {

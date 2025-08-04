@@ -2,10 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import select, Session
 from model.product import Product
 from database.connection import get_session
+from schemas.product import ProductRead 
+from typing import List
+
 
 router = APIRouter()
 
-@router.get("/showbyprice")
+@router.get("/showbyprice" ,response_model=List[ProductRead]
+ )
 def get_products(
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1),

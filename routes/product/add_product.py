@@ -30,8 +30,16 @@ def create_product(product: ProductCreate, session: Session = Depends(get_db),cu
         session.refresh(existing_product)
         return existing_product
     else:
+       
+        print("✅ مقدار image دریافتی:", product.image)
+
         db_product = Product.from_orm(product)
         session.add(db_product)
+        print("🎯 مقدار image قبل از commit:", db_product.image)
         session.commit()
         session.refresh(db_product)
+
+        print("📦 محصول ذخیره‌شده:", db_product.dict())
         return db_product
+
+
