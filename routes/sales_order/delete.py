@@ -7,16 +7,16 @@ from security.auth import get_current_user
 
 router = APIRouter()
 
-@router.delete("/delete/{order_id}")
+@router.delete("/delete/{id}")
 def delete_order(
-    order_id: int,
+    id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
     # پیدا کردن سفارش
     order = db.exec(
         select(OrderItem).where(
-            OrderItem.id == order_id,
+            OrderItem.id == id,
             OrderItem.user_id == current_user.id  # فقط سفارش‌های مربوط به کاربر فعلی
         )
     ).first()

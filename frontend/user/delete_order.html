@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8" />
+  <title>🗑️ حذف سفارش</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma;
+      background: linear-gradient(to left, #fdf6ef, #e6f4ee);
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .form-container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(125,174,160,0.2);
+      max-width: 480px;
+      width: 100%;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2f5d55;
+      font-size: 24px;
+      margin-bottom: 24px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    label {
+      font-weight: bold;
+      color: #2e6651;
+      font-size: 14px;
+    }
+
+    input {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #bbb;
+      font-size: 15px;
+      width: 100%;
+      direction: rtl;
+    }
+
+    button {
+      background-color: #c94848;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #a93d3d;
+    }
+
+    @media (max-width: 500px) {
+      .form-container {
+        padding: 20px;
+        margin: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>🗑️ حذف سفارش</h2>
+    <form id="deleteForm">
+      <div>
+        <label for="order_id">شناسه سفارش</label>
+        <input type="number" id="order_id" name="order_id" required />
+      </div>
+      <button type="submit">❌ حذف سفارش</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("deleteForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const id = parseInt(document.getElementById("order_id").value);
+
+      if (isNaN(id)) {
+        alert("❗ لطفاً شناسه سفارش معتبر وارد کنید.");
+        return;
+      }
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("❗ ابتدا وارد شوید تا بتوانید سفارش را حذف کنید.");
+        return;
+      }
+
+      if (!confirm("آیا مطمئنید که می‌خواهید این سفارش را حذف کنید؟")) {
+        return;
+      }
+
+      try {
+        const res = await fetch(`http://localhost:8000/sales_order/delete/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        });
+
+        const result = await res.json();
+        if (res.ok) {
+          alert(result.message || "✅ سفارش با موفقیت حذف شد.");
+          e.target.reset();
+        } else {
+          alert("❌ خطا: " + (result.detail || `کد وضعیت: ${res.status}`));
+        }
+      } catch (error) {
+        alert("❌ خطا در اتصال: " + error.message);
+      }
+    });
+  </script>
+</body>
+</html>
