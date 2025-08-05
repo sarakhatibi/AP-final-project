@@ -112,16 +112,20 @@
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
-        "Authorization": "Bearer " + localStorage.getItem("access_token")  // ⬅ توکن رو به‌درستی ارسال کن
+        "Authorization": "Bearer " + localStorage.getItem("token")
       },
       body: JSON.stringify(data)
     });
 
     const result = await res.json();
-    alert(result.message || "✅ سفارش ثبت شد");
-    e.target.reset();
+    if (res.status === 200) {
+      alert(result.message || "✅ سفارش ثبت شد");
+      e.target.reset();
+    } else {
+      alert("❌ خطا: " + (result.detail || "درخواست ناموفق، کد وضعیت: " + res.status));
+    }
   } catch (error) {
-    alert("❌ خطا در ثبت سفارش: " + error.message);
+    alert("❌ خطا در اتصال: " + error.message);
   }
 });
   </script>

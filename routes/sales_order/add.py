@@ -17,6 +17,9 @@ def create_order(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    user = db.exec(select(User).where(User.id == current_user.id)).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="کاربر پیدا نشد.")
    
     product = db.exec(select(Product).where(Product.id == order_data.product_id)).first()
     if not product:
