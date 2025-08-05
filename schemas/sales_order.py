@@ -18,5 +18,4 @@ class StatusUpdate(BaseModel):
 class  OrdersalesCreate(BaseModel):
 
     product_id: int
-    user_id: int
     quantity: int

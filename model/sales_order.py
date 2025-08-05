@@ -32,7 +32,6 @@ class Order(SQLModel, table=True):
  
 class OrderItem(SQLModel, table=True): 
     id: Optional[int] = Field(default=None, primary_key=True) 
-    user_id: int = Field(foreign_key="user.id")
     product_id: int = Field(foreign_key="product.id") 
     quantity: int 
     unit_price: float
