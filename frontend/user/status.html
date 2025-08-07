@@ -133,10 +133,13 @@
       if (!orderId) return;
 
       try {
-const res = await fetch(`http://localhost:8000/sales_order/status/${orderId}`, {
-  method: "PUT",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ order_id: orderId })
+        const res = await 
+          fetch(`http://localhost:8000/sales_order/status/${orderId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("token")
+  }
 });
 
         if (!res.ok) {
