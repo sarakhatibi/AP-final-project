@@ -63,17 +63,17 @@
 <body>
   <div class="container">
     <h2>✨ پرفروش‌ترین کالاها</h2>
-    <div id="top-products"></div>
+    <div id="top_products"></div>
     <div class="loader" id="loading">در حال بارگذاری داده‌ها...</div>
   </div>
 
   <script>
     async function fetchTopProducts() {
       try {
-        const response = await fetch("http://localhost:8000/report/top-products");
+        const response = await fetch("http://localhost:8000/report/top_products");
         const data = await response.json();
 
-        const container = document.getElementById("top-products");
+        const container = document.getElementById("top_products");
         const loading = document.getElementById("loading");
         loading.style.display = "none";
 

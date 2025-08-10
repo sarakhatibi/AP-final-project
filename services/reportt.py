@@ -4,13 +4,17 @@ from model.product import Product
 def get_top_products(session):
     stmt = (
         select(
-            Product.name, 
-            func.sum(OrderItem.quantity).label("total_sold")
+            Product.name,
+            Product.sku,
+            func.sum(OrderItem.quantity).label("sales_count")
         )
         .join(Product, Product.id == OrderItem.product_id)
-        .group_by(Product.name)
+        .group_by(Product.id)
         .order_by(func.sum(OrderItem.quantity).desc())
     )
     results = session.exec(stmt).all()
-    
-    return [{"product_name": name, "total_sold": total} for name, total in results]
+
+    return [
+        {"name": name, "sku": sku, "sales_count": count}
+        for name, sku, count in results
+    ]

@@ -20,7 +20,7 @@
       padding: 35px 30px;
       border-radius: 15px;
       box-shadow: 0 6px 20px rgba(125, 174, 160, 0.3);
-      max-width: 600px;
+      max-width: 700px;
       width: 100%;
       text-align: center;
     }
@@ -31,19 +31,26 @@
       margin-bottom: 25px;
     }
 
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 15px 0;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
       text-align: right;
     }
 
-    li {
-      margin-bottom: 10px;
-      padding: 8px;
-      background: #e6f4ee;
-      border-radius: 8px;
-      font-size: 16px;
+    th {
+      background-color: #e6f4ee;
+      cursor: pointer;
+      color: #2e6651;
+    }
+
+    tr:hover {
+      background-color: #f0f0f0;
     }
 
     button {
@@ -73,29 +80,39 @@
       color: red;
       min-height: 24px;
     }
-.back-button {
-  width: 100%;
-  height: 44px;
-  background-color: #89b9a6;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 15px;
-  transition: background-color 0.3s, transform 0.2s;
-}
 
-.back-button:hover {
-  background-color: #74ab94;
-  transform: translateY(-2px);
-}
+    .back-button {
+      width: 100%;
+      height: 44px;
+      background-color: #89b9a6;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .back-button:hover {
+      background-color: #74ab94;
+      transform: translateY(-2px);
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>نمایش کاربران</h2>
-    <ul id="userList"></ul>
+    <table id="userTable">
+      <thead>
+        <tr>
+          <th onclick="sortTable('full_name')">نام 👤</th>
+          <th onclick="sortTable('email')">ایمیل 📧</th>
+          <th onclick="sortTable('role')">نقش 🛡️</th>
+        </tr>
+      </thead>
+      <tbody id="userTableBody"></tbody>
+    </table>
 
     <button id="prevBtn" disabled>صفحه قبل</button>
     <button id="nextBtn">صفحه بعد</button>
@@ -104,100 +121,106 @@
     <button onclick="goBack()" class="back-button">🔙 بازگشت</button>
   </div>
 
-<script>
-  const userList = document.getElementById('userList');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  const messageDiv = document.getElementById('message');
+  <script>
+    const userTableBody = document.getElementById('userTableBody');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const messageDiv = document.getElementById('message');
 
-  let currentPage = 1;
-  const limit = 10;
+    let currentPage = 1;
+    const limit = 10;
+    let currentUsers = [];
 
-  const API_URL = 'http://localhost:8000/users/display_all';
+    const API_URL = 'http://localhost:8000/users/display_all';
+    const token = localStorage.getItem('token') || '';
 
-  
-  const token = localStorage.getItem('token') || '';  
+    async function fetchUsers(page = 1) {
+      try {
+        messageDiv.textContent = '';
+        const response = await fetch(`${API_URL}?page=${page}&limit=${limit}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json'
+          }
+        });
 
-  async function fetchUsers(page = 1) {
-    try {
-      messageDiv.textContent = '';
-      const response = await fetch(`${API_URL}?page=${page}&limit=${limit}`, {
-        headers: {
-      
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json'
+        if (response.status === 403) {
+          messageDiv.textContent = 'دسترسی محدود است، فقط ادمین‌ها می‌توانند این صفحه را ببینند.';
+          userTableBody.innerHTML = '';
+          prevBtn.disabled = true;
+          nextBtn.disabled = true;
+          return;
         }
-      });
 
-      if (response.status === 403) {
-        messageDiv.textContent = 'دسترسی محدود است، فقط ادمین‌ها می‌توانند این صفحه را ببینند.';
-        userList.innerHTML = '';
+        if (response.status === 404) {
+          messageDiv.textContent = 'کاربر دیگری در این صفحه وجود ندارد.';
+          userTableBody.innerHTML = '';
+          nextBtn.disabled = true;
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error('خطا در دریافت داده‌ها');
+        }
+
+        const users = await response.json();
+
+        if (users.length === 0) {
+          messageDiv.textContent = 'کاربر دیگری در این صفحه وجود ندارد.';
+          userTableBody.innerHTML = '';
+          nextBtn.disabled = true;
+          return;
+        }
+
+        renderUsers(users);
+        prevBtn.disabled = page === 1;
+        nextBtn.disabled = users.length < limit;
+        currentPage = page;
+
+      } catch (err) {
+        messageDiv.textContent = err.message;
+        userTableBody.innerHTML = '';
         prevBtn.disabled = true;
         nextBtn.disabled = true;
-        return;
       }
-
-      if (response.status === 404) {
-        messageDiv.textContent = 'کاربر دیگری در این صفحه وجود ندارد.';
-        userList.innerHTML = '';
-        nextBtn.disabled = true;
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error('خطا در دریافت داده‌ها');
-      }
-
-      const users = await response.json();
-
-      if (users.length === 0) {
-        messageDiv.textContent = 'کاربر دیگری در این صفحه وجود ندارد.';
-        userList.innerHTML = '';
-        nextBtn.disabled = true;
-        return;
-      }
-
-      
-      renderUsers(users);
-
-
-      prevBtn.disabled = page === 1;
-      nextBtn.disabled = users.length < limit;
-
-      currentPage = page;
-
-    } catch (err) {
-      messageDiv.textContent = err.message;
-      userList.innerHTML = '';
-      prevBtn.disabled = true;
-      nextBtn.disabled = true;
     }
-  }
 
-  function renderUsers(users) {
-    userList.innerHTML = '';
-    for (const user of users) {
-      const li = document.createElement('li');
-      li.textContent = `نام: ${user.full_name} - ایمیل: ${user.email} - نقش: ${user.role}`;
-      userList.appendChild(li);
+    function renderUsers(users) {
+      currentUsers = users;
+      userTableBody.innerHTML = '';
+      for (const user of users) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${user.full_name}</td>
+          <td>${user.email}</td>
+          <td>${user.role}</td>
+        `;
+        userTableBody.appendChild(row);
+      }
     }
-  }
 
-  prevBtn.addEventListener('click', () => {
-    if (currentPage > 1) {
-      fetchUsers(currentPage - 1);
+    function sortTable(key) {
+      const sorted = [...currentUsers].sort((a, b) =>
+        a[key].localeCompare(b[key], 'fa', { sensitivity: 'base' })
+      );
+      renderUsers(sorted);
     }
-  });
-  nextBtn.addEventListener('click', () => {
-    fetchUsers(currentPage + 1);
-  });
 
- 
-  fetchUsers(currentPage);
-      function goBack() {
+    prevBtn.addEventListener('click', () => {
+      if (currentPage > 1) {
+        fetchUsers(currentPage - 1);
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      fetchUsers(currentPage + 1);
+    });
+
+    function goBack() {
       window.history.back();
     }
-</script>
 
+    fetchUsers(currentPage);
+  </script>
 </body>
 </html>
