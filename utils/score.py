@@ -15,7 +15,7 @@ def calculate_provider_score(provider_id: int, session: Session) -> float:
 
     for order in orders:
         
-        if order.status == OrderStatus.delivered:
+        if order.status == OrderStatus.received:
             correct_deliveries += 1
 
             # بررسی سرعت تحویل

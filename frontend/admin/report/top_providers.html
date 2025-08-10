@@ -68,11 +68,11 @@
   </div>
 
   <script>
-    const providerId = 1; // مقدار را از URL یا ورودی کاربر بگیر
+    const providerId = 1; 
 
     async function fetchProviderScore() {
       try {
-        const res = await fetch(`http://localhost:8000/report/provider-score/${providerId}`);
+        const res = await fetch(`http://localhost:8000/report/provider_score/${providerId}`);
         const data = await res.json();
 
         const container = document.getElementById("score-data");
@@ -81,13 +81,10 @@
 
         const el = document.createElement("div");
         el.className = "score-box";
-        el.innerHTML = `
-          <p><strong>نام تأمین‌کننده:</strong> ${data.name}</p>
-          <p><strong>امتیاز کل:</strong> <span class="highlight">${data.total_score}</span></p>
-          <p><strong>زمان متوسط تحویل:</strong> ${data.avg_delivery_time} روز</p>
-          <p><strong>رضایت مشتریان:</strong> ${data.customer_rating} از 5</p>
-          <p><strong>تعداد کالاهای موفق:</strong> ${data.successful_products}</p>
-        `;
+ el.innerHTML = `
+  <p><strong>شناسه تأمین‌کننده:</strong> ${data.provider_id}</p>
+  <p><strong>امتیاز تحویل:</strong> <span class="highlight">${data.delivery_score}</span> از ۵</p>
+`;
 
         container.appendChild(el);
       } catch (error) {

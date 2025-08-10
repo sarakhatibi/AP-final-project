@@ -14,7 +14,7 @@ class OrderUpdate(SQLModel):
     status: Optional[OrderStatus] = None
     order_date: Optional[datetime] = None
     provider_id: Optional[int] = None
-
+    delivery_date: Optional[datetime] = None
 
 class OrderCreate(SQLModel):
     name: str = Field(..., min_length=1, description="نام کالا الزامی است")
@@ -24,6 +24,7 @@ class OrderCreate(SQLModel):
     status: str = Field(..., description="وضعیت سفارش الزامی است")
     category: Optional[str] = Field(None)  # اختیاریه
     expected_date: datetime = Field(..., description="تاریخ تحویل الزامی است")
+    delivery_date: Optional[datetime] = None 
 
 
 class OrderRead(SQLModel):
@@ -36,3 +37,4 @@ class OrderRead(SQLModel):
     price:float
     category: Optional[str] = None
     expected_date: datetime
+    delivery_date: Optional[datetime] = None 
