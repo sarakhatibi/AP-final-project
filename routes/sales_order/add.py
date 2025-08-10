@@ -3,7 +3,8 @@ from sqlmodel import Session, select
 from database.connection import get_db
 from model.product import Product
 from model.user import Userwallet, User
-from model.order import OrderItem, OrderStatus
+from model.order import OrderStatus
+from model.sales_order import OrderItem
 from schemas.sales_order import OrdersalesCreate
 from datetime import datetime
 from security.auth import get_current_user 

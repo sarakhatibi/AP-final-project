@@ -1,15 +1,16 @@
 from sqlmodel import select, func
-from datetime import datetime
-from model.sales_order import OrderItem 
-
-def get_top_products(start: datetime, end: datetime, session):
+from model.sales_order import OrderItem
+from model.product import Product 
+def get_top_products(session):
     stmt = (
         select(
-            OrderItem.product_name,
+            Product.name, 
             func.sum(OrderItem.quantity).label("total_sold")
         )
-        .where(OrderItem.order_date.between(start, end))
-        .group_by(OrderItem.product_name)
+        .join(Product, Product.id == OrderItem.product_id)
+        .group_by(Product.name)
         .order_by(func.sum(OrderItem.quantity).desc())
     )
-    return session.exec(stmt).all()
+    results = session.exec(stmt).all()
+    
+    return [{"product_name": name, "total_sold": total} for name, total in results]

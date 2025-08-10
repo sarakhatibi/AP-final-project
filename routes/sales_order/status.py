@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session, select
 from database.connection import get_db
-from model.order import OrderItem, OrderStatus
+from model.order import OrderStatus
 from schemas.sales_order import StatusUpdate
+from model.sales_order import OrderItem
 
 router = APIRouter()
 

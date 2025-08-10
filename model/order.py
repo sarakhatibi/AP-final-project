@@ -30,13 +30,5 @@ class Order(SQLModel, table=True):
     delivery_date: Optional[datetime] = None       # تاریخ واقعی تحویل
     expected_date: Optional[datetime] = None       # تاریخ مورد انتظار برای تحویل
  
-class OrderItem(SQLModel, table=True): 
-    id: Optional[int] = Field(default=None, primary_key=True) 
-    user_id: int = Field(foreign_key="user.id")
-    product_id: int = Field(foreign_key="product.id") 
-    quantity: int 
-    unit_price: float
-    status: OrderStatus = Field(default=OrderStatus.draft) 
-
 
 
