@@ -2,7 +2,7 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8" />
-  <title>حذف سفارش</title>
+  <title>شارژ کیف پول</title>
   <style>
     body {
       font-family: "Segoe UI", Tahoma, sans-serif;
@@ -43,7 +43,6 @@
       border: 1px solid #ccc;
       border-radius: 6px;
       font-size: 16px;
-      box-sizing: border-box;
     }
 
     button {
@@ -92,35 +91,29 @@
 <body>
 
   <div class="container">
-    <h2>حذف سفارش</h2>
+    <h2>شارژ کیف پول</h2>
 
-    <form id="deleteForm">
-      <label for="orderId">شناسه سفارش:</label>
-      <input id="orderId" type="number" placeholder="شناسه را وارد کنید" required />
-      <button type="submit">حذف سفارش</button>
+    <form id="walletForm">
+      <label for="amount">مبلغ به تومان:</label>
+      <input id="amount" type="number" min="0" step="0.01" placeholder="مبلغ را وارد کنید" required />
+      <button type="submit">شارژ کیف پول</button>
     </form>
 
     <div id="response"></div>
   </div>
 
   <script>
-    const form = document.getElementById("deleteForm");
-    const input = document.getElementById("orderId");
+    const form = document.getElementById("walletForm");
+    const amountInput = document.getElementById("amount");
     const responseDiv = document.getElementById("response");
     const button = form.querySelector("button");
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const id = input.value.trim();
-      if (!id) {
-        showResponse("لطفاً شناسه سفارش را وارد کنید.", true);
-        return;
-      }
-
-      const token = localStorage.getItem("token");
-      if (!token) {
-        showResponse("شما وارد نشده‌اید. لطفاً ابتدا وارد شوید.", true);
+      const amount = parseFloat(amountInput.value);
+      if (isNaN(amount) || amount <= 0) {
+        showResponse("مبلغ باید عددی بزرگ‌تر از صفر باشد.", true);
         return;
       }
 
@@ -129,27 +122,35 @@
       showResponse("");
 
       try {
-        const res = await fetch(`http://localhost:8000/sales_order/delete/${id}`, {
-          method: "DELETE",
+           
+    const token = localStorage.getItem("token"); 
+
+        if (!token) {
+          throw new Error("شما وارد نشده‌اید. لطفاً ابتدا وارد شوید.");
+        }
+
+        const res = await fetch("http://localhost:8000/users/wallet_charge", {
+          method: "POST",
           headers: {
-            "Authorization": `Bearer ${token}`
-          }
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`  
+          },
+          body: JSON.stringify({ amount })
         });
 
-        const data = await res.json();
-
-        if (res.ok) {
-          showResponse("✅ سفارش با موفقیت حذف شد.", false);
-          input.value = "";
-        } else {
-          showResponse(data.detail || "❌ خطا در حذف سفارش.", true);
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.detail || "خطا در درخواست");
         }
+
+        const data = await res.json();
+        showResponse(`کیف پول با موفقیت شارژ شد. موجودی فعلی: ${data.userwallet}`, false);
+        amountInput.value = "";
       } catch (err) {
-        showResponse("❌ خطا در ارتباط با سرور.", true);
-        console.error(err);
+        showResponse(err.message, true);
       } finally {
         button.disabled = false;
-        button.textContent = "حذف سفارش";
+        button.textContent = "شارژ کیف پول";
       }
     });
 
