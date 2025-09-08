@@ -15,7 +15,7 @@
       margin: 0;
     }
 
-    .dashboard {
+    .container {
       background-color: #ffffff;
       padding: 35px 30px;
       border-radius: 15px;
@@ -43,7 +43,6 @@
       margin: 10px 0;
       border-radius: 10px;
       font-size: 16px;
-      
       cursor: pointer;
       text-align: center;
       transition: background-color 0.3s, transform 0.2s;
@@ -53,65 +52,24 @@
       background-color: #74ab94;
       transform: translateY(-2px);
     }
-
   </style>
 </head>
 <body>
   <div class="container">
-     <h1> محصولات</h1>
+    <h1>محصولات</h1>
     <ul>
       <li onclick="location.href='showbyname_u.html'">🔠 لیست کالا بر اساس حروف الفبا</li>
-         <li onclick="location.href='showbyprice_u.html'">📈 لیست کالاها بر اساس قیمت</li>
+      <li onclick="location.href='showbyprice_u.html'">📈 لیست کالاها بر اساس قیمت</li>
       <li onclick="location.href='filterid_u.html'">🔍 جستجو کالا با ID</li>
       <li onclick="location.href='filtername_u.html'">🔎 جستجو کالا با نام</li>
       <li onclick="location.href='filterprice_u.html'">💰 جستجو بر اساس رنج قیمت</li>
       <li onclick="location.href='filtersku_u.html'">📦 جستجو با کد SKU</li>
-      <li onclick="location.href='lowstock_u.html'"> 📈 لیست کالا با موجودی کم </li>
+      <li onclick="location.href='lowstock_u.html'">📉 لیست کالا با موجودی کم</li>
     </ul>
-    
     <div id="product-list"></div>
   </div>
-
-  <script>
-    function loadProducts(sortBy = null) {
-      const token = localStorage.getItem("token"); // اگه auth فعاله
-      let url = "http://localhost:8000/products";
-      if (sortBy === "price") url += "?sort=price";
-      else if (sortBy === "name") url += "?sort=name";
-
-      fetch(url, {
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        }
-      })
-      .then(res => res.json())
-      .then(data => {
-        const list = document.getElementById("product-list");
-        list.innerHTML = "";
-
-        data.forEach(item => {
-          const card = document.createElement("div");
-          card.className = "product-card";
-          card.innerHTML = `
-            <div class="product-name">${item.name}</div>
-            <div>کد کالا: ${item.sku}</div>
-            <div class="price">قیمت: ${item.price.toLocaleString()} تومان</div>
-            <div>تعداد: ${item.quantity}</div>
-            <div>توضیحات: ${item.description || '-'}</div>
-          `;
-          list.appendChild(card);
-        });
-      })
-      .catch(err => {
-        document.getElementById("product-list").innerHTML =
-          `<div class="product-card">⚠️ خطا در دریافت داده‌ها: ${err}</div>`;
-      });
-    }
-
-    window.onload = () => loadProducts();
-  </script>
 </body>
+</html>
 
 
 

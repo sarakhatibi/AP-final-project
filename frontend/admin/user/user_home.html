@@ -74,45 +74,5 @@
 
     <div id="user-list"></div>
   </div>
-
-<script>
-  function loadUsers() {
-    const token = localStorage.getItem("token");
-
-    fetch("http://localhost:8000/users", {
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      }
-    })
-    .then(res => res.json())
-    .then(data => {
-      const list = document.getElementById("user-list");
-      list.innerHTML = "";
-
-      if (Array.isArray(data)) {
-        data.forEach(user => {
-          const card = document.createElement("div");
-          card.className = "user-card";
-          card.innerHTML = `
-            <div>👤 نام: ${user.name}</div>
-            <div>📧 ایمیل: ${user.email}</div>
-            <div>🆔 آیدی: ${user.id}</div>
-            <div>📞 تلفن: ${user.phone || '-'}</div>
-          `;
-          list.appendChild(card);
-        });
-      } else {
-        list.innerHTML = `<div class="user-card">⚠️ قالب داده‌ها صحیح نیست: ${JSON.stringify(data)}</div>`;
-      }
-    })
-    .catch(err => {
-      document.getElementById("user-list").innerHTML =
-        `<div class="user-card">⚠️ خطا در دریافت کاربران: ${err.message}</div>`;
-    });
-  }
-
-  window.onload = () => loadUsers();
-</script>
 </body>
 </html>
