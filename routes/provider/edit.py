@@ -1,33 +1,53 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session, select
-from database.connection import get_session
-from model.provider import Provider
-from schemas.provider import ProviderUpdate
-from security.auth import get_current_user
+from sqlmodel import Session
+from database.connection import get_db
 from model.user import User
-
+from schemas.user import UserUpdate, UserRead, UserUpdateResponse
+from security.auth import get_current_user
+from security.hash import hash_password
 
 router = APIRouter()
 
-
-@router.put("/edit/{provider_id}", response_model=Provider)
-def update_provider(
-    provider_id: int,
-    provider_update: ProviderUpdate,
-    session: Session = Depends(get_session),
+@router.get("/edit/{user_id}", response_model=UserRead)
+def get_user(
+    user_id: int,
+    session: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    if current_user.role != "admin":
-        raise HTTPException(status_code=403, detail="Access denied. Only admins can edit providers.")
-    providerobg = session.get(Provider, provider_id)
-    if not providerobg:
-        raise HTTPException(status_code=404, detail="Provider not found")
+    if current_user.role != "admin" and current_user.id != user_id:
+        raise HTTPException(status_code=403, detail="Access denied")
 
-    provider_data = provider_update.dict(exclude_unset=True)
-    for key, value in provider_data.items():
-        setattr(providerobg, key, value)
+    user = session.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
 
-    session.add(providerobg)
+    return user
+
+@router.put("/edit/{user_id}", response_model=UserUpdateResponse)
+def update_user(
+    user_id: int,
+    user_update: UserUpdate,
+    session: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role != "admin" and current_user.id != user_id:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    user = session.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if user_update.full_name is not None:
+        user.full_name = user_update.full_name
+    if user_update.email is not None:
+        user.email = user_update.email
+    if user_update.username is not None:
+        user.username = user_update.username
+    if user_update.password is not None and user_update.password.strip() != "":
+        user.hashed_password = hash_password(user_update.password)
+
+    session.add(user)
     session.commit()
-    session.refresh(providerobg)
-    return providerobg
+    session.refresh(user)
+
+    return {"msg": "User updated successfully", "user": user}

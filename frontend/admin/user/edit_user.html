@@ -4,146 +4,120 @@
   <meta charset="UTF-8" />
   <title>ویرایش پروفایل</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap');
-
-    body {
-      font-family: 'Vazirmatn', sans-serif;
-      background: linear-gradient(to right, #fdf5ec, #d5eae2);
+   body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(to left, #fdf6ef, #e6f4ee);
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       direction: rtl;
       margin: 0;
-    }
-
+   }
     .container {
-      background-color: #fff;
-      padding: 40px 32px;
-      border-radius: 16px;
-      box-shadow: 0 12px 28px rgba(125,174,160,0.18);
-      max-width: 400px;
+      background-color: #ffffff;
+      padding: 35px 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(125, 174, 160, 0.3);
+      max-width: 500px;
       width: 100%;
-      text-align: center;
     }
-
     h2 {
-      margin-bottom: 20px;
-      color: #2f5d55;
-      font-size: 24px;
+      text-align: center;
+      color: #2e6651;
+      font-size: 26px;
+      margin-bottom: 25px;
     }
-
-    input {
-      margin: 10px 0;
-      padding: 12px;
+    label, input, button {
+      display: block;
       width: 100%;
-      border: 1px solid #c3dbd4;
-      border-radius: 8px;
-      font-size: 15px;
-      background-color: #fcfaf7;
-      transition: border-color 0.3s;
+      margin: 10px 0;
+      font-size: 16px;
     }
-
-    input:focus {
-      border-color: #89b9a6;
-      outline: none;
-      box-shadow: 0 0 4px rgba(137,185,166,0.3);
+    input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
     }
-
     button {
       background-color: #89b9a6;
-      color: white;
-      padding: 12px;
-      width: 100%;
+      color: #fff;
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      margin-top: 14px;
+      padding: 12px;
+      border-radius: 10px;
       cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
+      transition: background-color 0.3s, transform 0.2s;
+  }
     button:hover {
-      background-color: #6fa795;
-    }
-
+      background-color: #74ab94;
+      transform: translateY(-2px);
+   }
     #response {
-      margin-top: 18px;
-      padding: 10px;
-      border-radius: 6px;
-      font-size: 14px;
-      min-height: 40px;
-      word-break: break-word;
-      text-align: center;
-    }
-
-    .success {
-      background-color: #e6f7f1;
-      color: #2f5d55;
-      border: 1px solid #89b9a6;
-    }
-
-    .error {
-      background-color: #fdecea;
-      color: #8f3f3f;
-      border: 1px solid #dd9999;
-    }
-
-    .loading {
-      background-color: #fff8e6;
-      color: #996a00;
-      border: 1px solid #e6c95b;
+      white-space: pre-wrap;
+      margin-top: 20px;
+      background-color: #f2f2f2;
+      padding: 15px;
+      border-radius: 10px;
+      color: #333;
+      font-size: 15px;
+      line-height: 1.6;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>ویرایش پروفایل کاربری</h2>
+    <h2>ویرایش پروفایل</h2>
     <form id="editProfileForm">
-      <input type="text" id="full_name" placeholder="نام کامل" required />
-      <input type="text" id="username" placeholder="نام کاربری" required />
-      <input type="email" id="email" placeholder="ایمیل" required />
-      <input type="password" id="password" placeholder="رمز عبور جدید (اختیاری)" />
-      <button type="submit" id="submitBtn">ثبت تغییرات</button>
+      <label for="full_name">نام کامل</label>
+      <input type="text" id="full_name" required />
+
+      <label for="username">نام کاربری</label>
+      <input type="text" id="username" required />
+
+      <label for="email">ایمیل</label>
+      <input type="email" id="email" required />
+
+      <label for="password">رمز عبور جدید (اختیاری)</label>
+      <input type="password" id="password" />
+
+      <button type="submit">ثبت تغییرات</button>
     </form>
     <div id="response"></div>
   </div>
 
   <script>
-    const token = localStorage.getItem("token") || localStorage.getItem("access_token");
-    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
 
-    const responseDiv = document.getElementById("response");
-    const form = document.getElementById("editProfileForm");
-    const submitBtn = document.getElementById("submitBtn");
-
-    const setResponse = (msg, type) => {
-      responseDiv.textContent = msg;
-      responseDiv.className = type;
+    const setResponse = (msg, type = "info") => {
+      const resDiv = document.getElementById("response");
+      resDiv.textContent = msg;
+      resDiv.style.color = type === "error" ? "red" : "#2e6651";
     };
 
-    if (!token || !userId) {
-      setResponse("❌ شما وارد نشده‌اید. لطفاً ابتدا وارد شوید.", "error");
-      form.style.display = "none";
+    if (!token || token.length < 10) {
+      setResponse("❌ لطفاً ابتدا وارد شوید", "error");
+      document.getElementById("editProfileForm").style.display = "none";
     } else {
-      fetch(`http://localhost:8000/users/edit/${userId}`, {
-        headers: { "Authorization": `Bearer ${token}` },
+      fetch("http://localhost:8000/users/edit", {
+        headers: { "Authorization": `Bearer ${token}` }
       })
       .then(res => {
-        if (!res.ok) throw new Error("خطا در دریافت اطلاعات کاربر");
+        if (!res.ok) {
+          return res.json().then(err => {
+            throw new Error(err.detail || "خطا در دریافت اطلاعات کاربر");
+          });
+        }
         return res.json();
       })
       .then(data => {
-        document.getElementById("full_name").value = data.full_name || "";
-        document.getElementById("username").value = data.username || "";
-        document.getElementById("email").value = data.email || "";
+        document.getElementById("full_name").value = data.full_name;
+        document.getElementById("username").value = data.username;
+        document.getElementById("email").value = data.email;
       })
-      .catch(err => {
-        setResponse("⚠️ " + err.message, "error");
-      });
+      .catch(err => setResponse("⚠️ " + err.message, "error"));
     }
 
-    form.addEventListener("submit", async (e) => {
+    document.getElementById("editProfileForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const full_name = document.getElementById("full_name").value.trim();
@@ -152,36 +126,26 @@
       const password = document.getElementById("password").value;
 
       const payload = { full_name, username, email };
-      if (password && password.trim() !== "") payload.password = password;
+      if (password) payload.password = password;
 
-      setResponse("⏳ در حال ارسال...", "loading");
-      submitBtn.disabled = true;
-
+      setResponse("⏳ در حال ارسال...");
       try {
-  const res = await fetch(`http://localhost:8000/users/edit/${userId}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
-    },
-    body: JSON.stringify(payload)
-  });
+        const res = await fetch("http://localhost:8000/users/edit", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
 
-  const result = await res.json();
+        const result = await res.json();
+        if (!res.ok) throw new Error(result.detail || result.message || "خطا در ویرایش");
 
-  if (!res.ok) {
-    const detail = result.detail || result.message || JSON.stringify(result);
-    setResponse("❌ خطا: " + detail, "error");
-    return;
-  }
-
-  setResponse("✅ ویرایش با موفقیت انجام شد.", "success");
-  form.reset();
-} catch (error) {
-  setResponse("❌ خطای شبکه یا سرور: " + (error.message || JSON.stringify(error)), "error");
-}
-
-      submitBtn.disabled = false;
+        setResponse(result.msg || "✅ اطلاعات با موفقیت ویرایش شد");
+      } catch (err) {
+        setResponse("❌ " + err.message, "error");
+      }
     });
   </script>
 </body>

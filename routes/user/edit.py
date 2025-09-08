@@ -1,30 +1,35 @@
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 from database.connection import get_db
 from model.user import User
-from schemas.user import UserUpdate   
+from schemas.user import UserUpdate, UserRead, UserUpdateResponse
 from security.auth import get_current_user
 from security.hash import hash_password
 
 router = APIRouter()
 
-@router.put("/edit/{user_id},response_model=UserUpdateResponse")
-def update_user(
-    user_id: int,
+# دریافت اطلاعات کاربر
+@router.get("/edit", response_model=UserRead)
+def get_current_user_info(
+    session: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    user = session.get(User, current_user.id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+# ویرایش اطلاعات کاربر
+@router.put("/edit", response_model=UserUpdateResponse)
+def update_current_user(
     user_update: UserUpdate,
     session: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    
-    
-    if current_user.role != "admin" and current_user.id != user_id:
-        raise HTTPException(status_code=403, detail="Access denied")
-
-
-    user = session.get(User, user_id)
+    user = session.get(User, current_user.id)
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    
+      raise HTTPException(status_code=404, detail="User not found")
 
     if user_update.full_name is not None:
         user.full_name = user_update.full_name
@@ -39,4 +44,4 @@ def update_user(
     session.commit()
     session.refresh(user)
 
-    return {"msg": "User updated successfully", "user": user}
+    return {"msg": "اطلاعات شما با موفقیت ویرایش شد", "user": user}

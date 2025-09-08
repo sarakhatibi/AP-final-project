@@ -21,6 +21,8 @@ class OrderType(str, Enum):
 class OrderItem(SQLModel, table=True): 
     id: Optional[int] = Field(default=None, primary_key=True) 
     product_id: int = Field(foreign_key="product.id") 
+    user_id: int = Field(foreign_key="user.id")
+
     quantity: int 
     unit_price: float
     status: OrderStatus = Field(default=OrderStatus.draft) 
