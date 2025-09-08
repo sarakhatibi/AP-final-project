@@ -2,135 +2,162 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8" />
-  <title>🗑️ حذف سفارش</title>
+  <title>حذف سفارش</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
-      font-family: "Segoe UI", Tahoma;
+      font-family: "Segoe UI", Tahoma, sans-serif;
       background: linear-gradient(to left, #fdf6ef, #e6f4ee);
-      margin: 0;
-      padding: 0;
-      direction: rtl;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      height: 100vh;
+      direction: rtl;
+      margin: 0;
     }
 
-    .form-container {
-      background-color: #fff;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 6px 18px rgba(125,174,160,0.2);
-      max-width: 480px;
+    .container {
+      background-color: #ffffff;
+      padding: 35px 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(125, 174, 160, 0.3);
+      max-width: 500px;
       width: 100%;
+      text-align: center;
     }
 
     h2 {
-      text-align: center;
-      color: #2f5d55;
-      font-size: 24px;
-      margin-bottom: 24px;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    label {
-      font-weight: bold;
       color: #2e6651;
-      font-size: 14px;
+      font-size: 26px;
+      margin-bottom: 25px;
+    }
+
+    label, input, button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      font-size: 16px;
     }
 
     input {
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #bbb;
-      font-size: 15px;
-      width: 100%;
-      direction: rtl;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
     }
 
     button {
-      background-color: #c94848;
+      background-color: #89b9a6;
       color: #fff;
       border: none;
       padding: 12px;
-      font-size: 16px;
       border-radius: 10px;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: background-color 0.3s, transform 0.2s;
+      font-size: 16px;
+      margin-top: 15px;
     }
 
-    button:hover {
-      background-color: #a93d3d;
+    button:hover:not(:disabled) {
+      background-color: #74ab94;
+      transform: translateY(-2px);
     }
 
-    @media (max-width: 500px) {
-      .form-container {
-        padding: 20px;
-        margin: 10px;
-      }
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    #response {
+      white-space: pre-wrap;
+      margin-top: 20px;
+      background-color: #f2f2f2;
+      padding: 15px;
+      border-radius: 10px;
+      color: #333;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 60px;
+    }
+
+    .error {
+      color: red;
+    }
+
+    .success {
+      color: #2e6651;
     }
   </style>
 </head>
 <body>
-  <div class="form-container">
-    <h2>🗑️ حذف سفارش</h2>
+
+  <div class="container">
+    <h2>حذف سفارش</h2>
+
     <form id="deleteForm">
-      <div>
-        <label for="order_id">شناسه سفارش</label>
-        <input type="number" id="order_id" name="order_id" required />
-      </div>
-      <button type="submit">❌ حذف سفارش</button>
+      <label for="orderId">شناسه سفارش:</label>
+      <input id="orderId" type="number" placeholder="شناسه را وارد کنید" required />
+      <button type="submit">حذف سفارش</button>
     </form>
+
+    <div id="response"></div>
   </div>
 
   <script>
-    document.getElementById("deleteForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
-      const id = parseInt(document.getElementById("order_id").value);
+    const form = document.getElementById("deleteForm");
+    const input = document.getElementById("orderId");
+    const responseDiv = document.getElementById("response");
+    const button = form.querySelector("button");
 
-      if (isNaN(id)) {
-        alert("❗ لطفاً شناسه سفارش معتبر وارد کنید.");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const id = input.value.trim();
+      if (!id) {
+        showResponse("لطفاً شناسه سفارش را وارد کنید.", true);
         return;
       }
 
       const token = localStorage.getItem("token");
       if (!token) {
-        alert("❗ ابتدا وارد شوید تا بتوانید سفارش را حذف کنید.");
+        showResponse("شما وارد نشده‌اید. لطفاً ابتدا وارد شوید.", true);
         return;
       }
 
-      if (!confirm("آیا مطمئنید که می‌خواهید این سفارش را حذف کنید؟")) {
-        return;
-      }
+      button.disabled = true;
+      button.textContent = "در حال ارسال...";
+      showResponse("");
 
       try {
         const res = await fetch(`http://localhost:8000/sales_order/delete/${id}`, {
           method: "DELETE",
           headers: {
-            "Authorization": "Bearer " + token
+            "Authorization": `Bearer ${token}`
           }
         });
 
-        const result = await res.json();
+        const data = await res.json();
+
         if (res.ok) {
-          alert(result.message || "✅ سفارش با موفقیت حذف شد.");
-          e.target.reset();
+          showResponse("✅ سفارش با موفقیت حذف شد.", false);
+          input.value = "";
         } else {
-          alert("❌ خطا: " + (result.detail || `کد وضعیت: ${res.status}`));
+          showResponse(data.detail || "❌ خطا در حذف سفارش.", true);
         }
-      } catch (error) {
-        alert("❌ خطا در اتصال: " + error.message);
+      } catch (err) {
+        showResponse("❌ خطا در ارتباط با سرور.", true);
+        console.error(err);
+      } finally {
+        button.disabled = false;
+        button.textContent = "حذف سفارش";
       }
     });
+
+    function showResponse(message, isError = false) {
+      responseDiv.textContent = message;
+      responseDiv.className = isError ? "error" : "success";
+    }
   </script>
+
 </body>
 </html>
