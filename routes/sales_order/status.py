@@ -7,28 +7,15 @@ from model.sales_order import OrderItem
 
 router = APIRouter()
 
-@router.put("/status/{order_id}")
-def update_order_status(order_id: int, data: StatusUpdate, db: Session = Depends(get_db)):
-    try:
-        order = db.exec(select(OrderItem).where(OrderItem.id == order_id)).first()
-        if not order:
-            raise HTTPException(status_code=404, detail="سفارش پیدا نشد.")
+@router.get("/status/{order_id}")
+def get_order_status(order_id: int, db: Session = Depends(get_db)):
+    order = db.exec(select(OrderItem).where(OrderItem.id == order_id)).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="سفارش پیدا نشد.")
 
-        print("🧪 Enum فعلی:", [e.value for e in OrderStatus])
-
-        print("✅ مقدار جدید status: ", data.new_status)
-
-        order.status = data.new_status
-
-        db.add(order)
-        db.commit()
-        db.refresh(order)
-
-        return {
-            "message": f"وضعیت سفارش با موفقیت به '{order.status}' تغییر کرد",
-            "order_id": order.id,
-            "new_status": order.status
-        }
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"❌ خطای داخلی: {str(e)}")
+    return {
+        "product_id": order.product_id,
+        "quantity": order.quantity,
+        "unit_price": order.unit_price,
+        "status": order.status
+    }
